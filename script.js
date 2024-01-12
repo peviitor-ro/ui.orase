@@ -61,8 +61,6 @@ function search(data) {
     }
   });
 
-  // if(searchResultsContainer.innerHTML)
-
   // Add an event listener to the search results container
   searchResultsContainer.addEventListener("click", function (event) {
     // searchInput.innerHTML = "";
