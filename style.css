@@ -1,20 +1,25 @@
 body {
-  background-color: cyan;
+  margin: 0;
+  padding: 0;
+  background-color: #7db6bf;
+  background-color: #08200f;
 }
 
+h1 {
+  color: #ff9100;
+  margin-left: 20px;
+}
 .container {
-  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: auto;
+  margin: 10em auto;
   letter-spacing: 1.1px;
 }
 
 .content {
-  /* display: block; */
-  background-color: white;
+  /* background-color: white; */
   border-radius: 8px;
   height: 40vh;
   width: 500px;
@@ -30,9 +35,11 @@ body {
 .search {
   display: flex;
   align-items: center;
-  padding: 10px 0px;
+  padding: 5px 0px;
+  width: 20em;
+  height: 3em;
   border: 1px solid black;
-  border-radius: 5px;
+  border-radius: 16px 16px 0px 0px;
   background-color: white;
 }
 
@@ -44,44 +51,52 @@ body {
 .search input {
   outline: none;
   border: 0px;
+  width: 20em;
+  font-size: 16px;
+  text-wrap: balance;
+  text-transform: capitalize;
 }
-#searchResults {
+
+.searchResults {
+  display: none;
+  border-radius: 0px 0px 16px 16px;
   background-color: #faf7f7;
-  margin-top: 20px;
+  margin-top: 5px;
   overflow: auto;
-  height: 200px;
-  min-width: 300px;
-  max-width: 300px;
+  height: 20em;
+  width: 20em;
 }
 
-#searchResults::-webkit-scrollbar {
-  width: 7px;
+.searchResults-display {
+  display: block;
 }
 
-#searchResults::-webkit-scrollbar-track {
+.searchResults::-webkit-scrollbar {
+  width: 10px;
+}
+
+.searchResults::-webkit-scrollbar-track {
+  background: #08200f;
+}
+
+.searchResults::-webkit-scrollbar-thumb {
+  cursor: pointer;
+  background: #ff9100;
   border-radius: 25px;
-  background: #f1f1f1;
 }
 
-#searchResults::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 25px;
-}
-
-#searchResults ul {
+.searchResults ul {
   padding: 0px;
   text-align: start;
 }
 
-#searchResults ul li {
+.searchResults ul li {
   list-style: none;
-  /* margin: 5px 0px; */
   text-transform: capitalize;
-  width: fit-content;
   cursor: pointer;
   padding: 10px;
   text-overflow: clip;
 }
-#searchResults ul li:hover {
-  background-color: rgb(235, 235, 235);
+.searchResults ul li:hover {
+  background-color: #7db6bf;
 }

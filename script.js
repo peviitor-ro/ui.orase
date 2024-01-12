@@ -25,7 +25,8 @@ const searchInp = document.querySelector(".searchInp");
 function search(data) {
   // Get DOM elements
   const searchInput = document.getElementById("searchInput");
-  const searchResultsContainer = document.getElementById("searchResults");
+  const searchResultsContainer = document.querySelector(".searchResults");
+  const searchResultDislay = document.querySelector(".searchResults-display");
 
   // Example usage:
   searchInput.addEventListener("input", function () {
@@ -39,7 +40,6 @@ function search(data) {
         searchedVal,
         data.municipiu
       );
-
       // Check if there are any matching results
       if (searchResult || searchResultBucuresti) {
         const uniqueResults = removeDuplicates(searchResult);
@@ -50,11 +50,25 @@ function search(data) {
       }
     } else {
       // Display a message when less than 3 letters are entered
+      searchResultsContainer.classList.add("searchResults-display");
       searchResultsContainer.innerHTML =
         "<p>Introdu minim 3 litere ca sa poata functiona searchul</p>";
     }
     // Clear results when the search input is empty
     if (searchedVal.length < 1) {
+      searchResultsContainer.classList.remove("searchResults-display");
+      searchResultsContainer.innerHTML = "";
+    }
+  });
+
+  // Add an event listener to the search results container
+  searchResultsContainer.addEventListener("click", function (event) {
+    // searchInput.innerHTML = "";
+    if (event.target.tagName === "LI") {
+      const selectedLocation = event.target.innerText;
+      searchInput.value = selectedLocation;
+      searchResultsContainer.classList.remove("searchResults-display");
+
       searchResultsContainer.innerHTML = "";
     }
   });
