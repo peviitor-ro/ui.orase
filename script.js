@@ -9,7 +9,7 @@ async function getData() {
   try {
     const response = await fetch(`https://orase.peviitor.ro/`);
     const data = await response.json();
-    console.log(data.judet);
+    // console.log(data.judet);
     search(data);
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -26,7 +26,6 @@ function search(data) {
   // Get DOM elements
   const searchInput = document.getElementById("searchInput");
   const searchResultsContainer = document.querySelector(".searchResults");
-  const searchResultDislay = document.querySelector(".searchResults-display");
 
   // Example usage:
   searchInput.addEventListener("input", function () {
@@ -378,7 +377,7 @@ function search(data) {
 
     if (results != null) {
       for (const result of results) {
-        const key = `${result.judet}-${result.judet}-${result.parent}`;
+        const key = `${result.query}-${result.judet}-${result.parent}`;
 
         if (
           (result.judet !== result.parent && result.judet !== result.query) ||

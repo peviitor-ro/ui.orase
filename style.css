@@ -1,7 +1,15 @@
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+html,
 body {
   margin: 0;
   padding: 0;
-  background-color: #7db6bf;
+}
+
+body {
   background-color: #08200f;
 }
 
@@ -99,4 +107,55 @@ h1 {
 }
 .searchResults ul li:hover {
   background-color: #7db6bf;
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #072c12;
+  border: 1px solid white;
+  box-shadow: inset 0px 6px 6px white;
+  letter-spacing: 1px;
+}
+
+footer .footer-link {
+  display: flex;
+  flex-direction: column;
+  margin-left: 15px;
+  margin-bottom: 10px;
+  width: fit-content;
+}
+
+footer .footer-link p {
+  font-weight: 600;
+  margin-bottom: 5px;
+  font-size: 18px;
+  color: white;
+  padding: 0px 10px;
+}
+
+footer .footer-link a {
+  text-decoration: none;
+  font-size: 17px;
+  color: #ff9100;
+  margin: 5px 0px;
+  width: fit-content;
+  border: 1px solid #072c12;
+  padding: 10px;
+  transition: all 0.5s ease-in-out;
+}
+
+footer .copyright {
+  color: #ff9100;
+  padding: 10px;
+  font-size: 16px;
+  margin: 0px;
+  border-top: 1px solid white;
+  text-align: center;
+}
+
+footer .footer-link a:hover {
+  border: 1px solid #ff9100;
+  border-radius: 26px;
 }
