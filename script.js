@@ -42,6 +42,7 @@ function search(data) {
       // Check if there are any matching results
       if (searchResult || searchResultBucuresti) {
         const uniqueResults = removeDuplicates(searchResult);
+        // console.log(searchResult);
         // Display the results
         displayResults(uniqueResults, searchResultBucuresti);
       } else {
@@ -101,9 +102,11 @@ function search(data) {
         results.forEach((result) => {
           const li = document.createElement("li");
 
-          if (result.judet != null) {
+          if (result.judet !== null) {
             li.textContent = `${result.query.toLowerCase()}, 
-            ${result.judet.toLowerCase()} (${result.parent.toLowerCase()})`;
+            ${result.judet.toLowerCase()} ${
+              result.tip !== null ? `(${result.parent.toLowerCase()})` : ""
+            }`;
           } else {
             li.textContent = `${result.query.toLowerCase()}, ${result.query.toLowerCase()}`;
           }
@@ -180,8 +183,8 @@ function search(data) {
       if (filtre) {
         const result = {
           query: location.nume,
-          parent: parentJudetName,
           judet: parentName,
+          parent: parentJudetName,
           tip: location.tip || null,
         };
         matchingLocations.push(result);
@@ -206,14 +209,16 @@ function search(data) {
           const localitateResult = searchLocation(
             query,
             municipiuLocation.localitate,
-            location.nume,
+            municipiuLocation.nume,
             judetName
           );
+
           if (localitateResult != null) {
             matchingLocations.push(
               ...localitateResult.filter((result) => result !== null)
             );
           }
+
           for (const nestedLocalitate of municipiuLocation.localitate) {
             const nestedLocalitateResults = searchLocation(
               query,
@@ -221,6 +226,7 @@ function search(data) {
               municipiuLocation.nume,
               judetName
             );
+
             if (nestedLocalitateResults != null) {
               matchingLocations.push(
                 ...nestedLocalitateResults.filter((result) => result !== null)
@@ -265,7 +271,7 @@ function search(data) {
           const localitateResult = searchLocation(
             query,
             orasLocation.localitate,
-            location.nume,
+            orasLocation.nume,
             judetName
           );
 
@@ -307,6 +313,7 @@ function search(data) {
           }
         }
       }
+
       if (location.comuna) {
         const comunaResult = searchLocation(
           query,
@@ -324,7 +331,7 @@ function search(data) {
           const localitateResult = searchLocation(
             query,
             comunaLocation.localitate,
-            location.nume,
+            comunaLocation.nume,
             judetName
           );
 
@@ -375,22 +382,22 @@ function search(data) {
     const uniqueResults = [];
     const seenResults = new Set();
 
+    // console.log(results);
     if (results != null) {
       for (const result of results) {
-        const key = `${result.query}-${result.judet}-${result.parent}`;
-
+        const key = `${result.judet}-${result.parent}-${result.query}`;
         if (
-          (result.judet !== result.parent && result.judet !== result.query) ||
+          (result.judet !== result.query && result.query !== result.parent) ||
           (result.judet === null && result.parent === null)
         ) {
           if (!seenResults.has(key)) {
             seenResults.add(key);
+
             uniqueResults.push(result);
           }
         }
       }
     }
-
     return uniqueResults;
   }
 }
