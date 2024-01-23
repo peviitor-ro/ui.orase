@@ -6,11 +6,6 @@
   --text-secondary: #000000;
 }
 
-html {
-  /* position: relative; */
-  /* min-height: 100%; */
-}
-
 html,
 body {
   margin: 0;
@@ -174,18 +169,11 @@ footer {
 
 footer .footer-link {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 5px;
   margin-left: 3em;
   margin-bottom: 10px;
   width: fit-content;
-}
-
-footer .footer-link p {
-  font-weight: 600;
-  margin-bottom: 5px;
-  font-size: 18px;
-
-  padding: 0px 10px;
 }
 
 footer .footer-link a {
