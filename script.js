@@ -13,7 +13,6 @@ async function getData() {
   try {
     const response = await fetch(`https://orase.peviitor.ro/`);
     const data = await response.json();
-    // console.log(data.judet);
     search(data);
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -46,7 +45,6 @@ function search(data) {
       // Check if there are any matching results
       if (searchResult || searchResultBucuresti) {
         const uniqueResults = removeDuplicates(searchResult);
-        // console.log(searchResult);
         // Display the results
         displayResults(uniqueResults, searchResultBucuresti);
       } else {
@@ -67,7 +65,6 @@ function search(data) {
 
   // Add an event listener to the search results container
   searchResultsContainer.addEventListener("click", function (event) {
-    // searchInput.innerHTML = "";
     if (event.target.tagName === "LI") {
       const selectedLocation = event.target.innerText;
       searchInput.value = selectedLocation;
@@ -162,24 +159,15 @@ function search(data) {
 
     for (const location of locations) {
       const judetName = location.nume ? location.nume : parentJudetName;
-      const filtre =
-        location.nume
-          .toLowerCase()
-          .replace(aREG, "s")
-          .replace(bREG, "t")
-          .replace(cREG, "a")
-          .replace(dREG, "a") &&
-        judetName
-          .toLowerCase()
-          .replace(aREG, "s")
-          .replace(bREG, "t")
-          .replace(cREG, "a")
-          .replace(dREG, "a")
-          .includes(query);
+      const filtre = judetName
+        .toLowerCase()
+        .replace(aREG, "s")
+        .replace(bREG, "t")
+        .replace(cREG, "a")
+        .replace(dREG, "a")
+        .includes(query);
 
-      const filtreDiacritice =
-        location.nume.toLowerCase().includes(query) &&
-        judetName.toLowerCase().includes(query);
+      const filtreDiacritice = judetName.toLowerCase().includes(query);
 
       if (filtre || filtreDiacritice) {
         const result = {
@@ -383,7 +371,6 @@ function search(data) {
     const uniqueResults = [];
     const seenResults = new Set();
 
-    // console.log(results);
     if (results != null) {
       for (const result of results) {
         const key = `${result.judet}-${result.parent}-${result.query}`;
