@@ -1,3 +1,7 @@
+window.onload = function () {
+  document.getElementById("searchInput").focus();
+};
+
 // Define regular expressions for special characters
 const aREG = new RegExp("ș", "g");
 const bREG = new RegExp("ț", "g");
@@ -68,7 +72,6 @@ function search(data) {
       const selectedLocation = event.target.innerText;
       searchInput.value = selectedLocation;
       searchResultsContainer.classList.remove("searchResults-display");
-
       searchResultsContainer.innerHTML = "";
     }
   });
@@ -161,17 +164,11 @@ function search(data) {
       const judetName = location.nume ? location.nume : parentJudetName;
       const filtre =
         location.nume
-          .replace(aREG, "s")
-          .replace(bREG, "t")
-          .replace(cREG, "a")
-          .replace(dREG, "a") &&
-        location.nume
           .toLowerCase()
           .replace(aREG, "s")
           .replace(bREG, "t")
           .replace(cREG, "a")
-          .replace(dREG, "a")
-          .includes(query) &&
+          .replace(dREG, "a") &&
         judetName
           .toLowerCase()
           .replace(aREG, "s")
@@ -180,7 +177,11 @@ function search(data) {
           .replace(dREG, "a")
           .includes(query);
 
-      if (filtre) {
+      const filtreDiacritice =
+        location.nume.toLowerCase().includes(query) &&
+        judetName.toLowerCase().includes(query);
+
+      if (filtre || filtreDiacritice) {
         const result = {
           query: location.nume,
           judet: parentName,
@@ -401,3 +402,13 @@ function search(data) {
     return uniqueResults;
   }
 }
+
+const deleteIcon = document.querySelector(".delete-icon");
+
+deleteIcon.addEventListener("click", () => {
+  document.querySelector("#searchInput").value = "";
+  document.querySelector(".searchResults").innerHTML = "";
+  document
+    .querySelector(".searchResults")
+    .classList.remove("searchResults-display");
+});
