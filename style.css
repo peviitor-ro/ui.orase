@@ -1,6 +1,14 @@
+:root {
+  --primary-accent: #ff9100;
+  --bg-primary: #f2f2fc;
+  --bg-secondary: #fdf9ff;
+  --text-primary: #333333;
+  --text-secondary: #000000;
+}
+
 html {
-  position: relative;
-  min-height: 100%;
+  /* position: relative; */
+  /* min-height: 100%; */
 }
 
 html,
@@ -10,13 +18,35 @@ body {
 }
 
 body {
-  background-color: #08200f;
+  background-color: var(--bg-primary);
 }
 
-h1 {
-  color: #ff9100;
-  margin-left: 20px;
+.logo {
+  display: flex;
+  gap: 10px;
+  margin: 20px;
+  color: var(--text-primary);
+
+  flex-wrap: wrap;
+  align-items: center;
 }
+
+.logo img {
+  width: 120px;
+}
+
+.logo p {
+  margin: 0px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+@media (width < 780px) {
+  .logo {
+    gap: 0px;
+  }
+}
+
 .container {
   display: flex;
   flex-direction: column;
@@ -27,7 +57,6 @@ h1 {
 }
 
 .content {
-  /* background-color: white; */
   border-radius: 8px;
   height: 40vh;
   width: 500px;
@@ -46,14 +75,18 @@ h1 {
   padding: 5px 0px;
   width: 20em;
   height: 3em;
-  border: 1px solid black;
+  border: 1px solid var(--text-secondary);
   border-radius: 16px 16px 0px 0px;
-  background-color: white;
+  background-color: var(--bg-secondary);
 }
 
 .search img {
   width: 15px;
   margin: 0px 10px;
+}
+
+.delete-icon {
+  cursor: pointer;
 }
 
 .search input {
@@ -63,12 +96,14 @@ h1 {
   font-size: 16px;
   text-wrap: balance;
   text-transform: capitalize;
+  background-color: var(--bg-secondary);
 }
 
 .searchResults {
   display: none;
   border-radius: 0px 0px 16px 16px;
-  background-color: #faf7f7;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--text-secondary);
   margin-top: 5px;
   overflow: auto;
   height: 20em;
@@ -84,12 +119,14 @@ h1 {
 }
 
 .searchResults::-webkit-scrollbar-track {
-  background: #08200f;
+  background-color: var(--primary-accent);
+  border: 4px solid transparent;
+  background-clip: padding-box;
 }
 
 .searchResults::-webkit-scrollbar-thumb {
   cursor: pointer;
-  background: #ff9100;
+  background: var(--primary-accent);
   border-radius: 25px;
 }
 
@@ -106,23 +143,39 @@ h1 {
   text-overflow: clip;
 }
 .searchResults ul li:hover {
-  background-color: #7db6bf;
+  background-color: var(--primary-accent);
+}
+
+.wave {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
 }
 
 footer {
   position: fixed;
   bottom: 0;
   width: 100%;
-  background-color: #072c12;
-  border: 1px solid white;
-  box-shadow: inset 0px 6px 6px white;
+  height: 250px;
+  background-image: url("./icons/wave.png");
+  color: var(--text-secondary);
+  background-size: 100% 100%;
   letter-spacing: 1px;
+  z-index: -1;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  padding-top: 30px;
 }
 
 footer .footer-link {
   display: flex;
   flex-direction: column;
-  margin-left: 15px;
+  margin-left: 3em;
   margin-bottom: 10px;
   width: fit-content;
 }
@@ -131,31 +184,37 @@ footer .footer-link p {
   font-weight: 600;
   margin-bottom: 5px;
   font-size: 18px;
-  color: white;
+
   padding: 0px 10px;
 }
 
 footer .footer-link a {
   text-decoration: none;
   font-size: 17px;
-  color: #ff9100;
   margin: 5px 0px;
   width: fit-content;
-  border: 1px solid #072c12;
+  color: var(--text-secondary);
+  border: 1px solid var(--primary-accent);
   padding: 10px;
   transition: all 0.5s ease-in-out;
 }
 
+footer .footer-link a:hover {
+  border: 1px solid var(--text-secondary);
+  border-radius: 26px;
+}
+
 footer .copyright {
-  color: #ff9100;
+  color: var(--text-secondary);
   padding: 10px;
   font-size: 16px;
   margin: 0px;
-  border-top: 1px solid white;
+  border-top: 1px solid var(--text-primary);
   text-align: center;
 }
 
-footer .footer-link a:hover {
-  border: 1px solid #ff9100;
-  border-radius: 26px;
+@media (width < 780px) {
+  footer {
+    background-image: url("./icons/waveMobile.png");
+  }
 }
