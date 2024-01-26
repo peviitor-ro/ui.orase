@@ -68,7 +68,7 @@ body {
   display: flex;
   align-items: center;
   padding: 5px 0px;
-  width: 20em;
+  min-width: 20em;
   height: 3em;
   border: 1px solid var(--text-secondary);
   border-radius: 16px 16px 0px 0px;
@@ -87,11 +87,11 @@ body {
 .search input {
   outline: none;
   border: 0px;
-  width: 20em;
   font-size: 16px;
   text-wrap: balance;
   text-transform: capitalize;
   background-color: var(--bg-secondary);
+  margin-right: auto;
 }
 
 .searchResults {
