@@ -58,6 +58,7 @@ function search(data) {
     }
     // Clear results when the search input is empty
     if (searchedVal.length < 1) {
+      searchInput.style.width = "auto";
       searchResultsContainer.classList.remove("searchResults-display");
       searchResultsContainer.innerHTML = "";
     }
@@ -67,6 +68,7 @@ function search(data) {
   searchResultsContainer.addEventListener("click", function (event) {
     if (event.target.tagName === "LI") {
       const selectedLocation = event.target.innerText;
+      searchInput.style.width = `${selectedLocation.length * 9}px`;
       searchInput.value = selectedLocation;
       searchResultsContainer.classList.remove("searchResults-display");
       searchResultsContainer.innerHTML = "";
@@ -393,6 +395,7 @@ function search(data) {
 const deleteIcon = document.querySelector(".delete-icon");
 
 deleteIcon.addEventListener("click", () => {
+  document.querySelector("#searchInput").style.width = "auto";
   document.querySelector("#searchInput").value = "";
   document.querySelector(".searchResults").innerHTML = "";
   document
