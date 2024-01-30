@@ -19,110 +19,162 @@ async function getData() {
   }
 }
 
-// Execute the getData function to start the process
 getData();
+
+const cardTemplate = document.querySelector("[data-template]");
+const cardContainer = document.querySelector("[data-container]");
 
 const searchInp = document.querySelector(".searchInp");
 
-// Search-related functions
 function search(data) {
-  // Get DOM elements
   const searchInput = document.getElementById("searchInput");
-  const searchResultsContainer = document.querySelector(".searchResults");
 
-  // Example usage:
   searchInput.addEventListener("input", function () {
-    // Get the value from the search input and clean it
     const searchedVal = searchInput.value.trim().toLowerCase();
 
-    // Start the search after at least 3 letters
     if (searchedVal.length >= 3) {
       const searchResult = searchLocation(searchedVal, data.judet);
       const searchResultBucuresti = searchMunicipiu(
         searchedVal,
         data.municipiu
       );
-      // Check if there are any matching results
+
       if (searchResult || searchResultBucuresti) {
         const uniqueResults = removeDuplicates(searchResult);
-        // Display the results
         displayResults(uniqueResults, searchResultBucuresti);
       } else {
         displayResults([]);
       }
     } else {
-      // Display a message when less than 3 letters are entered
-      searchResultsContainer.classList.add("searchResults-display");
-      searchResultsContainer.innerHTML =
+      cardContainer.classList.add("searchResults-display");
+      cardContainer.innerHTML =
         "<p>Introdu minim 3 litere ca sa poata functiona searchul</p>";
     }
-    // Clear results when the search input is empty
+
     if (searchedVal.length < 1) {
       searchInput.style.width = "auto";
-      searchResultsContainer.classList.remove("searchResults-display");
-      searchResultsContainer.innerHTML = "";
+      cardContainer.classList.remove("searchResults-display");
+      cardContainer.innerHTML = "";
+    }
+  });
+
+  // Add an event listener to handle paste events
+  searchInput.addEventListener("paste", function (event) {
+    event.preventDefault();
+
+    const pastedText = event.clipboardData.getData("text");
+    searchInput.value = pastedText;
+
+    const searchedVal = pastedText.trim().toLowerCase();
+    if (searchedVal.length >= 3) {
+      const searchResult = searchLocation(searchedVal, data.judet);
+      const searchResultBucuresti = searchMunicipiu(
+        searchedVal,
+        data.municipiu
+      );
+
+      if (searchResult || searchResultBucuresti) {
+        const uniqueResults = removeDuplicates(searchResult);
+        displayResults(uniqueResults, searchResultBucuresti);
+      } else {
+        displayResults([]);
+      }
+    } else {
+      cardContainer.classList.add("searchResults-display");
+      cardContainer.innerHTML =
+        "<p>Introdu minim 3 litere ca sa poata functiona searchul</p>";
     }
   });
 
   // Add an event listener to the search results container
-  searchResultsContainer.addEventListener("click", function (event) {
-    if (event.target.tagName === "LI") {
-      const selectedLocation = event.target.innerText;
-      searchInput.style.width = `${selectedLocation.length * 9}px`;
-      searchInput.value = selectedLocation;
-      searchResultsContainer.classList.remove("searchResults-display");
-      searchResultsContainer.innerHTML = "";
+  cardContainer.addEventListener("click", function (event) {
+    const divElement = event.target.closest("div");
+
+    if (divElement) {
+      const selectedLocation = divElement.innerText;
+
+      // Add space between words
+      const spacedLocation = selectedLocation.replace(/\s+/g, " ");
+
+      searchInput.style.width = `${spacedLocation.length * 9}px`;
+      searchInput.value = spacedLocation;
+      cardContainer.classList.remove("searchResults-display");
+      cardContainer.innerHTML = "";
     }
   });
 
   function displayResults(results, resultsBucuresti) {
-    // Clear previous results
-    searchResultsContainer.innerHTML = "";
+    cardContainer.innerHTML = "";
 
     if (
       (results && results.length > 0) ||
       (resultsBucuresti && resultsBucuresti.length > 0)
     ) {
-      const ul = document.createElement("ul");
       // Display Bucuresti results
       if (resultsBucuresti) {
         resultsBucuresti.forEach((result) => {
-          const li = document.createElement("li");
-
+          const card = cardTemplate.content.cloneNode(true).children[0];
+          const dataQuery = card.querySelector("[data-query]");
+          const dataParent = card.querySelector("[data-parent]");
           if (result.parent != null) {
-            li.textContent = `${result.query.toLowerCase()},
-          ${result.parent.toLowerCase()}`;
+            dataQuery.textContent = result.query + ",";
+            dataParent.textContent = result.parent.toLowerCase();
           } else {
-            li.textContent = `${result.query.toLowerCase()}, ${result.query.toLowerCase()}`;
+            dataQuery.textContent = result.query.toLowerCase() + ",";
+            dataParent.textContent = result.query.toLowerCase();
           }
-          ul.appendChild(li);
+
+          dataQuery.style.textTransform = "capitalize";
+          dataParent.style.textTransform = "capitalize";
+
+          cardContainer.appendChild(card);
         });
       }
 
       // Display judete results
       if (results) {
         results.forEach((result) => {
-          const li = document.createElement("li");
+          const card = cardTemplate.content.cloneNode(true).children[0];
+          const dataQuery = card.querySelector("[data-query]");
+          const dataParent = card.querySelector("[data-parent]");
+          const dataJudet = card.querySelector("[data-judet]");
+
+          const checkQuery = result.query.includes("de");
 
           if (result.judet !== null) {
-            li.textContent = `${result.query.toLowerCase()}, 
-            ${result.judet.toLowerCase()} ${
+            dataQuery.textContent = `${
+              checkQuery ? result.query + "," : result.query.toLowerCase() + ","
+            }`;
+            dataJudet.textContent = result.judet.toLowerCase();
+            dataParent.textContent = `${
               result.tip !== null ? `(${result.parent.toLowerCase()})` : ""
             }`;
           } else {
-            li.textContent = `${result.query.toLowerCase()}, ${result.query.toLowerCase()}`;
+            dataQuery.textContent = `${
+              checkQuery ? result.query + "," : result.query.toLowerCase() + ","
+            }`;
+            dataParent.textContent = result.query.toLowerCase();
           }
-          ul.appendChild(li);
+
+          if (!checkQuery) {
+            dataQuery.style.textTransform = "capitalize";
+            dataParent.style.textTransform = "capitalize";
+            dataJudet.style.textTransform = "capitalize";
+          } else {
+            dataParent.style.textTransform = "capitalize";
+            dataJudet.style.textTransform = "capitalize";
+          }
+
+          cardContainer.appendChild(card);
         });
       }
-
-      searchResultsContainer.appendChild(ul);
     } else {
-      // Display a message when no results are found
       const p = document.createElement("p");
-      p.textContent = "Location not found";
-      searchResultsContainer.appendChild(p);
+      p.textContent = "Locatia nu a fost gasita!";
+      cardContainer.appendChild(p);
     }
+
+    cardContainer.classList.add("searchResults-display");
   }
 
   function searchMunicipiu(query, locations) {
@@ -179,7 +231,6 @@ function search(data) {
           tip: location.tip || null,
         };
         matchingLocations.push(result);
-        // Location found
       }
 
       // Recursively search in municipality, city, and commune levels
