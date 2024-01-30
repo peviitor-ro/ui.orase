@@ -89,7 +89,6 @@ body {
   border: 0px;
   font-size: 16px;
   text-wrap: balance;
-  text-transform: capitalize;
   background-color: var(--bg-secondary);
   margin-right: auto;
 }
@@ -125,19 +124,20 @@ body {
   border-radius: 25px;
 }
 
-.searchResults ul {
-  padding: 0px;
-  text-align: start;
-}
-
-.searchResults ul li {
-  list-style: none;
-  text-transform: capitalize;
+.searchResults .container-results {
+  display: flex;
+  flex-wrap: wrap;
   cursor: pointer;
   padding: 10px;
+  gap: 5px;
+  font-size: 18px;
   text-overflow: clip;
 }
-.searchResults ul li:hover {
+.searchResults .container-results p {
+  padding: 0px;
+  margin: 0px;
+}
+.searchResults .container-results:hover {
   background-color: var(--primary-accent);
 }
 
