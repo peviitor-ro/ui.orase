@@ -110,6 +110,50 @@ function search(data) {
       (results && results.length > 0) ||
       (resultsBucuresti && resultsBucuresti.length > 0)
     ) {
+      const searchTerm = searchInput.value.trim().toLowerCase();
+
+      // Custom sorting function based on the closeness of the match to the beginning
+      const customSort = (a, b) => {
+        const aIndex =
+          a.query.toLowerCase().indexOf(searchTerm) &&
+          a.query
+            .toLowerCase()
+
+            .replace(aREG, "s")
+            .replace(bREG, "t")
+            .replace(cREG, "a")
+            .replace(dREG, "a")
+            .indexOf(searchTerm);
+        const bIndex =
+          b.query.toLowerCase().indexOf(searchTerm) &&
+          b.query
+            .toLowerCase()
+
+            .replace(aREG, "s")
+            .replace(bREG, "t")
+            .replace(cREG, "a")
+            .replace(dREG, "a")
+            .indexOf(searchTerm);
+
+        // If the search term is present in both items, sort based on the index
+        if (aIndex !== -1 && bIndex !== -1) {
+          return aIndex - bIndex || a.query.localeCompare(b.query);
+        }
+
+        // If only one of the items contains the search term, prioritize it
+        if (aIndex !== -1) {
+          return -1;
+        }
+        if (bIndex !== -1) {
+          return 1;
+        }
+
+        // If neither item contains the search term, sort alphabetically
+        return a.query.localeCompare(b.query);
+      };
+
+      // Sort the results array using the custom sort function
+      const sortedResults = results.sort(customSort);
       // Display Bucuresti results
       if (resultsBucuresti) {
         resultsBucuresti.forEach((result) => {
@@ -133,7 +177,7 @@ function search(data) {
 
       // Display judete results
       if (results) {
-        results.forEach((result) => {
+        sortedResults.forEach((result) => {
           const card = cardTemplate.content.cloneNode(true).children[0];
           const dataQuery = card.querySelector("[data-query]");
           const dataParent = card.querySelector("[data-parent]");
