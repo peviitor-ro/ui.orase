@@ -100,7 +100,7 @@ body {
   border: 1px solid var(--text-secondary);
   margin-top: 5px;
   overflow: auto;
-  height: 20em;
+  max-height: 20em;
   width: 20em;
 }
 
