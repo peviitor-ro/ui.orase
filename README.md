@@ -47,15 +47,19 @@
    - Această funcție primește rezultatele căutării și le afișează într-un container.
    - Se verifică dacă există rezultate pentru București (`resultsBucuresti`) și pentru județe (`results`) și le afișează distinct.
    - Dacă nu există rezultate, se afișează un mesaj corespunzător.
+   - 
+6. **Funcția `customSort` - Sortare personalizată**
+   - Această funcție realizează o sortare personalizată a rezultatelor, prioritară în funcție de apropierea potrivirii la început.
 
-6. **Funcțiile de căutare `searchMunicipiu` și `searchLocation`**
+
+7. **Funcțiile de căutare `searchMunicipiu` și `searchLocation`**
    - `searchMunicipiu`: Caută în municipii și sectoarele acestora.
    - `searchLocation`: Caută într-o locație (municipiu, oraș, comună) și recursiv în sublocațiile acesteia.
 
-7. **Funcția `removeDuplicates` - Eliminare duplicați**
+8. **Funcția `removeDuplicates` - Eliminare duplicați**
    - Elimină rezultatele duplicate pe baza județului, părintelui și numelui locației.
 
-8. **Evenimentul de ștergere a conținutului**
+9. **Evenimentul de ștergere a conținutului**
    ```javascript
    const deleteIcon = document.querySelector(".delete-icon");
 
