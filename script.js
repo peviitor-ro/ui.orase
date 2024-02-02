@@ -131,7 +131,6 @@ function search(data) {
         });
       }
 
-      console.log(results);
       // Display judete results
       if (results) {
         results.forEach((result) => {
