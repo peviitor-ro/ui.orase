@@ -144,8 +144,9 @@ function search(data) {
           const keywordMatchQuery = keywordsToCheck.some((keyword) =>
             result.query.includes(keyword)
           );
-          const keywordMatchParent = keywordsToCheck.some((keyword) =>
-            result.parent.includes(keyword)
+          const keywordMatchParent = keywordsToCheck.some(
+            (keyword) =>
+              result.parent !== null && result.parent.includes(keyword)
           );
 
           if (result.judet !== null) {
