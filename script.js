@@ -139,29 +139,50 @@ function search(data) {
           const dataParent = card.querySelector("[data-parent]");
           const dataJudet = card.querySelector("[data-judet]");
 
-          const checkQuery = result.query.includes("de");
+          const keywordsToCheck = ["de", "lui", "cu", "din"];
+
+          const keywordMatchQuery = keywordsToCheck.some((keyword) =>
+            result.query.includes(keyword)
+          );
+          const keywordMatchParent = keywordsToCheck.some((keyword) =>
+            result.parent.includes(keyword)
+          );
 
           if (result.judet !== null) {
             dataQuery.textContent = `${
-              checkQuery ? result.query + "," : result.query.toLowerCase() + ","
+              keywordMatchQuery
+                ? result.query + ","
+                : result.query.toLowerCase() + ","
             }`;
             dataJudet.textContent = result.judet.toLowerCase();
             dataParent.textContent = `${
-              result.tip !== null ? `(${result.parent.toLowerCase()})` : ""
+              result.tip !== null
+                ? `(${
+                    keywordMatchParent
+                      ? result.parent
+                      : result.parent.toLowerCase()
+                  })`
+                : ""
             }`;
           } else {
             dataQuery.textContent = `${
-              checkQuery ? result.query + "," : result.query.toLowerCase() + ","
+              keywordMatchQuery
+                ? result.query + ","
+                : result.query.toLowerCase() + ","
             }`;
             dataParent.textContent = result.query.toLowerCase();
           }
 
-          if (!checkQuery) {
+          if (!keywordMatchQuery) {
             dataQuery.style.textTransform = "capitalize";
-            dataParent.style.textTransform = "capitalize";
             dataJudet.style.textTransform = "capitalize";
+            if (!keywordMatchParent) {
+              dataParent.style.textTransform = "capitalize";
+            }
           } else {
-            dataParent.style.textTransform = "capitalize";
+            if (!keywordMatchParent) {
+              dataParent.style.textTransform = "capitalize";
+            }
             dataJudet.style.textTransform = "capitalize";
           }
 
