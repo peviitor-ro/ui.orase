@@ -26,10 +26,20 @@ const cardContainer = document.querySelector("[data-container]");
 
 const searchInp = document.querySelector(".searchInp");
 
+function validateInput(input) {
+  // Use a regular expression to check if the input contains letters, special characters, or spaces
+  var regex = /^[a-zA-ZșțâăŞŢÂĂ\s]+$/;
+  if (!regex.test(input.value)) {
+    // If input is invalid, clear the input value
+    input.value = input.value.replace(/[^a-zA-ZșțâăŞŢÂĂ\s]/g, "");
+  }
+}
+
 function search(data) {
   const searchInput = document.getElementById("searchInput");
 
   searchInput.addEventListener("input", function () {
+    validateInput(searchInput);
     const searchedVal = searchInput.value.trim().toLowerCase();
 
     if (searchedVal.length >= 3) {
@@ -183,7 +193,7 @@ function search(data) {
           const dataParent = card.querySelector("[data-parent]");
           const dataJudet = card.querySelector("[data-judet]");
 
-          const keywordsToCheck = ["de", "lui", "cu", "din", "cel"];
+          const keywordsToCheck = ["de", "lui", "cu", "din", "cel", "la"];
 
           const keywordMatchQuery = keywordsToCheck.some((keyword) =>
             result.query.includes(keyword)
