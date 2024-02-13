@@ -100,9 +100,16 @@ function search(data) {
   cardContainer.addEventListener("click", function (event) {
     const divElement = event.target.closest("div");
 
-    if (divElement) {
-      const selectedLocation = divElement.innerText;
+    const checkDivText = divElement.innerHTML.includes(
+      "<p>Introdu minim 3 litere ca sa poata functiona searchul</p>"
+    );
 
+    const checkDivText2 = divElement.innerHTML.includes(
+      "Locatia nu a fost gasita!"
+    );
+
+    if (divElement && !checkDivText && !checkDivText2) {
+      const selectedLocation = divElement.innerText;
       // Add space between words
       const spacedLocation = selectedLocation.replace(/\s+/g, " ");
 
