@@ -12,18 +12,17 @@
 ## 🌍 Documentație ui.orase
 
 ## 📄 Descriere Proiect
-Acest proiect constă într-un motor de căutare creat pentru identificarea orașelor, satelor și localităților din România, folosind un API endpoint specific. Utilizatorii pot introduce numele unei localități într-un câmp de căutare, iar apoi vor primi rezultate relevante despre acea locatie sau locații similare din întreaga țară.
+Acest proiect constă într-un motor de căutare creat pentru identificarea orașelor, satelor și localităților din România, folosind un API endpoint specific. Utilizatorii pot introduce numele unei locații într-un câmp de căutare, iar apoi vor primi rezultate relevante despre acea locatie sau locații similare din întreaga țară.
 
 ## 🛠️ Tehnologii folosite
 Tehnologiile principale utilizate în acest proiect sunt:
 - <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original.svg" alt="html5" width="18"/> HTML: Structura de bază a paginii web.
-
 - <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original.svg" alt="css3" width="18"/> CSS: Stilizarea și formatarea paginii pentru o experiență vizuală plăcută.
 - <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg" alt="javascript" width="15"/> JavaScript: Logica de programare pentru gestionarea evenimentelor, interacțiunea cu API-ul și afișarea rezultatelor.
 
 ## 🎯 Obiective
 1. **🔍 Focus la încărcarea paginii**: Se asigură că inputul de căutare primește automat focus-ul la încărcarea paginii.
-2. **🔄 Interacțiune cu API**: Se obține datele de la un API (https://orase.peviitor.ro/) și se inițiază căutarea.
+2. **🔄 Interacțiune cu API**: Se obțin datele de la un API (https://orase.peviitor.ro/) și se inițiază căutarea.
 3. **🔎 Căutare și afișare rezultate**: Implementează căutarea în datele primite și afișează rezultatele într-un container.
 
 ## 📚 Referințe API
@@ -117,7 +116,7 @@ Exemplu de răspuns JSON:
 - Extrage conținutul într-un folder din calculatorul tău.
 
 ### 3. Deschide Pagina HTML în Browser
-- Intră în folderul unde a fost exstras proiectului.
+- Intră în folderul unde a fost extras proiectului.
 - Deschideți fișierul index.html într-un browser web pentru a vedea aplicația.
 
 ## 🎛️ Funcționalități și Explicații
@@ -168,9 +167,7 @@ Exemplu de răspuns JSON:
 
 7. **🔍 Funcțiile de căutare `searchMunicipiu` și `searchLocation`**
    - `searchMunicipiu`: Caută în municipii și sectoarele acestora.
-   - `searchLocation`: Caută într-o locație (municipiu, oraș, comună
-
-) și recursiv în sublocațiile acesteia.
+   - `searchLocation`: Caută într-o locație (municipiu, oraș, comună) și recursiv în sublocațiile acesteia.
 
 8. **🗑️ Funcția `removeDuplicates` - Eliminare duplicați**
    - Elimină rezultatele duplicate pe baza județului, părintelui și numelui locației.
