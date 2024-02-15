@@ -200,7 +200,7 @@ function search(data) {
           const dataParent = card.querySelector("[data-parent]");
           const dataJudet = card.querySelector("[data-judet]");
 
-          const keywordsToCheck = ["de", "lui", "cu", "din", "cel", "la"];
+          const keywordsToCheck = ["de", "lui", "cu", "din", "cel", "la", "II"];
 
           const keywordMatchQuery = keywordsToCheck.some((keyword) =>
             result.query.includes(keyword)
