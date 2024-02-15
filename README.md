@@ -1,3 +1,5 @@
+<h3 align="center">Căutare Locații: România</h3>
+
 <div align="center">
    
   [![Status](https://img.shields.io/badge/status-active-success.svg)]() 
@@ -7,7 +9,7 @@
   
 </div>
 
-# 🌍 Documentație ui.orase
+## 🌍 Documentație ui.orase
 
 ## 📄 Descriere Proiect
 Acest proiect constă într-un motor de căutare creat pentru identificarea orașelor, satelor și localităților din România, folosind un API endpoint specific. Utilizatorii pot introduce numele unei localități într-un câmp de căutare, iar apoi vor primi rezultate relevante despre acea locatie sau locații similare din întreaga țară.
