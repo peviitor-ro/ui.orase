@@ -28,10 +28,21 @@ const searchInp = document.querySelector(".searchInp");
 
 function validateInput(input) {
   // Use a regular expression to check if the input contains letters, special characters, or spaces
-  var regex = /^[a-zA-ZșțâăŞŢÂĂ\s]+$/;
-  if (!regex.test(input.value)) {
-    // If input is invalid, clear the input value
+  const regex = /^[a-zA-ZșțâăŞŢÂĂ\s]+$/;
+
+  const invalidInput = document.querySelector(".errors");
+  const search = document.querySelector(".search");
+
+  if (!regex.test(input.value) && input.value.trim() !== "") {
+    // If input contains only letters and spaces, clear the input value
     input.value = input.value.replace(/[^a-zA-ZșțâăŞŢÂĂ\s]/g, "");
+    // input.value = ""; // Curăță inputul
+    invalidInput.style.display = "block";
+    search.style.border = "1px solid red";
+    setTimeout(function () {
+      invalidInput.style.display = "none";
+      search.style.border = "1px solid black";
+    }, 2000);
   }
 }
 
