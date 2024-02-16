@@ -7,6 +7,7 @@ const aREG = new RegExp("ș", "g");
 const bREG = new RegExp("ț", "g");
 const cREG = new RegExp("â", "g");
 const dREG = new RegExp("ă", "g");
+const eREG = new RegExp("î", "g");
 
 // Fetch data from the API and initiate the search
 async function getData() {
@@ -28,14 +29,14 @@ const searchInp = document.querySelector(".searchInp");
 
 function validateInput(input) {
   // Use a regular expression to check if the input contains letters, special characters, or spaces
-  const regex = /^[a-zA-ZșțâăŞŢÂĂ\s]+$/;
+  const regex = /^[a-zA-ZșțâăîÎŞŢÂĂ\s]+$/;
 
   const invalidInput = document.querySelector(".errors");
   const search = document.querySelector(".search");
 
   if (!regex.test(input.value) && input.value.trim() !== "") {
     // If input contains only letters and spaces, clear the input value
-    input.value = input.value.replace(/[^a-zA-ZșțâăŞŢÂĂ\s]/g, "");
+    input.value = input.value.replace(/[^a-zA-ZșțâăîÎŞŢÂĂ\s]/g, "");
     // input.value = ""; // Curăță inputul
     invalidInput.style.display = "block";
     search.style.border = "1px solid red";
@@ -274,10 +275,9 @@ function search(data) {
   function searchMunicipiu(query, locations) {
     let matchingLocations = [];
 
-    const filtre = locations.nume
-      .toLowerCase()
-      .replace(aREG, "s")
-      .includes(query);
+    const filtre =
+      locations.nume.toLowerCase().replace(aREG, "s").includes(query) ||
+      locations.nume.toLowerCase().includes(query);
 
     if (filtre) {
       const result = {
@@ -307,17 +307,17 @@ function search(data) {
 
     for (const location of locations) {
       const judetName = location.nume ? location.nume : parentJudetName;
-      const filtre = judetName
-        .toLowerCase()
-        .replace(aREG, "s")
-        .replace(bREG, "t")
-        .replace(cREG, "a")
-        .replace(dREG, "a")
-        .includes(query);
+      const filtre =
+        judetName
+          .toLowerCase()
+          .replace(aREG, "s")
+          .replace(bREG, "t")
+          .replace(cREG, "a")
+          .replace(dREG, "a")
+          .replace(eREG, "i")
+          .includes(query) || judetName.toLowerCase().includes(query);
 
-      const filtreDiacritice = judetName.toLowerCase().includes(query);
-
-      if (filtre || filtreDiacritice) {
+      if (filtre) {
         const result = {
           query: location.nume,
           judet: parentName,
