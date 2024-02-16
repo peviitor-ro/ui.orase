@@ -188,4 +188,3 @@ Exemplu de răspuns JSON:
 - Codul este scris într-un mod modular și organizat pentru a facilita înțelegerea și menținerea acestuia.
 - Se utilizează expresii regulate pentru a gestiona corect caracterele speciale în procesul de căutare.
 - Funcțiile sunt documentate prin comentarii pentru a oferi o înțelegere mai bună a logicii implementate.
-```
