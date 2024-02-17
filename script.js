@@ -85,9 +85,10 @@ function search(data) {
     event.preventDefault();
 
     const pastedText = event.clipboardData.getData("text");
-    searchInput.value = pastedText;
+    const currentInputValue = searchInput.value;
+    searchInput.value = currentInputValue + pastedText;
 
-    const searchedVal = pastedText.trim().toLowerCase();
+    const searchedVal = (currentInputValue + pastedText).trim().toLowerCase();
     if (searchedVal.length >= 3) {
       const searchResult = searchLocation(searchedVal, data.judet);
       const searchResultBucuresti = searchMunicipiu(
