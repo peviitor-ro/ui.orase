@@ -107,9 +107,9 @@ Exemplu de răspuns JSON:
 ## 🚀 Descărcare și Instalare
 
 ### 1. Descarcă Ultimul Release
-- Accesează [pagina de releases](https://github.com/nume-utilizator/repo-proiect/releases) pe GitHub.
+- Accesează [pagina de releases](https://github.com/peviitor-ro/ui.orase/releases) pe GitHub.
 - Alege ultima versiune de release.
-- Descarcă fișierul arhivă (de exemplu, `proiect-v1.0.0.zip`).
+- Descarcă fișierul arhivă.
 
 ### 2. Extrage Arhiva
 - Deschide arhiva descărcată.
