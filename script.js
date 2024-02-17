@@ -37,7 +37,6 @@ function validateInput(input) {
   if (!regex.test(input.value) && input.value.trim() !== "") {
     // If input contains only letters and spaces, clear the input value
     input.value = input.value.replace(/[^a-zA-ZșțâăîÎŞŢÂĂ\s]/g, "");
-    // input.value = ""; // Curăță inputul
     invalidInput.style.display = "block";
     search.style.border = "1px solid red";
     setTimeout(function () {
