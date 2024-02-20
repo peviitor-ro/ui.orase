@@ -29,14 +29,14 @@ const searchInp = document.querySelector(".searchInp");
 
 function validateInput(input) {
   // Use a regular expression to check if the input contains letters, special characters, or spaces
-  const regex = /^[a-zA-ZșțâăîÎŞŢÂĂ\s]+$/;
+  const regex = /^[a-zA-ZșțâăîÎŞŢÂĂ\s-]+$/;
 
   const invalidInput = document.querySelector(".errors");
   const search = document.querySelector(".search");
 
   if (!regex.test(input.value) && input.value.trim() !== "") {
     // If input contains only letters and spaces, clear the input value
-    input.value = input.value.replace(/[^a-zA-ZșțâăîÎŞŢÂĂ\s]/g, "");
+    input.value = input.value.replace(/[^a-zA-ZșțâăîÎŞŢÂĂ\s-]/g, "");
     invalidInput.style.display = "block";
     search.style.border = "1px solid red";
     setTimeout(function () {
