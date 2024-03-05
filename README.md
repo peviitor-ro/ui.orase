@@ -138,41 +138,60 @@ Exemplu de răspuns JSON:
    ```
    Expresii regulate pentru caracterele speciale "ș", "ț", "â", "ă" care vor fi folosite ulterior în procesul de căutare.
 
-3. **🔄 Funcția `getData` - Obținerea datelor de la API**
+3. **🔄 Funcția `fetchData` - Obținerea datelor de la API**
    ```javascript
-   async function getData() {
+   async function fetchData() {
        try {
            const response = await fetch(`https://orase.peviitor.ro/`);
            const data = await response.json();
-           search(data);
+            performSearch(data);
+            renderDropdown(data);
        } catch (error) {
            console.error("Error fetching data:", error);
        }
    }
    ```
-   Funcția utilizează `fetch` pentru a obține datele de la API, apoi inițiază funcția de căutare (`search`) cu datele obținute.
+   Funcția utilizează `fetch` pentru a obține datele de la API, apoi inițiază funcția de căutare (`performSearch`) cu datele obținute.
 
-4. **🔍 Funcția de căutare principală `search`**
+4. **🔢 Funcția `renderDropdown`**
+   - Afișare meniu dropdown cu toate judetele
+   - La click pe un judet, functia `displaySelectedData` este apelata pentru a afisa toate locatiile (municipii, orase, comune) din acel judet
+
+     **Funcționalități cheie:**
+      1. **🌐Generare meniu dropdown:**
+            - Se realizează sortarea alfabetică a datelor și apoi se afișează acestea în meniul dropdown.
+            - La click pe câmpul de căutare și dacă acesta este gol, meniul dropdown va afișa județele Romaniei.
+
+      2. **🔍Afișarea inițială:**
+            - Se afișează toate județele.
+            - Dacă utilizatorul dă click pe un judet, se apelează funcția displaySelectedData care afișează toate locațiile din acel judet și adaugă butonul "Înapoi".
+
+      3. **🔙Generare buton de înapoi:**
+            - Se adaugă un buton de "Înapoi" pentru a permite utilizatorului să revină la nivelul anterior din meniul dropdown.
+
+
+5. **🔍 Funcția de căutare principală `performSearch`**
    - Acest bloc de cod se ocupă de inițializarea evenimentelor și procesul de căutare în datele primite.
    - Evenimentul de input declanșează căutarea numai dacă există cel puțin 3 caractere introduse în câmpul de căutare.
    - Rezultatele căutării sunt afișate în containerul `.searchResults`.
 
-5. **📊 Funcția `displayResults` - Afișare rezultate**
-   - Această funcție primește rezultatele căutării și le afișează într-un container.
-   - Se verifică dacă există rezultate pentru București (`resultsBucuresti`) și pentru județe (`results`) și le afișează distinct.
-   - Dacă nu există rezultate, se afișează un mesaj corespunzător.
+     **Funcționalități cheie:**
+      1. **📊 Funcția `displayResults` - Afișare rezultate**
+            - Această funcție primește rezultatele căutării și le afișează într-un container.
+            - Se verifică dacă există rezultate pentru București (`resultsBucuresti`) și pentru județe (`results`) și le afișează distinct.
+            - Dacă nu există rezultate, se afișează un mesaj corespunzător.
 
-6. **🔄 Funcția `customSort` - Sortare personalizată**
-   - Această funcție realizează o sortare personalizată a rezultatelor, prioritară în funcție de apropierea potrivirii la început.
+      2. **🔄 Funcția `customSort` - Sortare personalizată**
+            - Această funcție realizează o sortare personalizată a rezultatelor, prioritară în funcție de apropierea potrivirii la început.
 
-7. **🔍 Funcțiile de căutare `searchMunicipiu` și `searchLocation`**
-   - `searchMunicipiu`: Caută în municipii și sectoarele acestora.
-   - `searchLocation`: Caută într-o locație (municipiu, oraș, comună) și recursiv în sublocațiile acesteia.
+      3. **🔍 Funcțiile de căutare `searchMunicipiu` și `searchLocation`**
+            - `searchMunicipiu`: Caută în municipii și sectoarele acestora.
+            - `searchLocation`: Caută într-o locație (municipiu, oraș, comună) și recursiv în sublocațiile acesteia.
 
-8. **🗑️ Funcția `removeDuplicates` - Eliminare duplicați**
-   - Elimină rezultatele duplicate pe baza județului, părintelui și numelui locației.
+      4. **🗑️ Funcția `removeDuplicates` - Eliminare duplicați**
+            - Elimină rezultatele duplicate pe baza județului, părintelui și numelui locației.
 
-9. **🧹 Evenimentul de ștergere a conținutului**
+7. **🧹 Evenimentul de ștergere a conținutului**
    ```javascript
    const deleteIcon = document.querySelector(".delete-icon");
 
