@@ -25,32 +25,6 @@ async function fetchData() {
 // Trigger data fetching on page load
 fetchData();
 
-// Add an event listener to the document for mousedown event
-document.addEventListener("mousedown", (event) => {
-  const isClickInsideSearchInput = searchInput.contains(event.target);
-  if (
-    !isClickInsideSearchInput &&
-    !isDescendantOf(event.target, dropDownContainer)
-  ) {
-    // Clicked outside both searchInput and dropDownContainer
-    dropDownContainer.classList.remove("searchResults-display");
-    dropDownContainer.innerHTML = "";
-    dropDownContainer.scrollTop = 0;
-  }
-});
-
-// Function to check if an element is a descendant of another element
-function isDescendantOf(child, ancestor) {
-  let node = child.parentNode;
-  while (node !== null) {
-    if (node === ancestor) {
-      return true;
-    }
-    node = node.parentNode;
-  }
-  return false;
-}
-
 const searchInput = document.getElementById("searchInput");
 const dropDownTemplate = document.querySelector("[dropDown-template]");
 const dropDownContainer = document.querySelector("[dropDown-container]");
@@ -62,7 +36,7 @@ function renderDropdown(data) {
   // Event listener for the search input click
   searchInput.addEventListener("click", () => {
     if (!searchInput.value.trim()) {
-      dropDownContainer.classList.toggle("searchResults-display");
+      dropDownContainer.classList.add("searchResults-display");
       dropDownContainer.innerHTML = "";
       dropDownContainer.scrollTop = 0;
 
@@ -254,6 +228,30 @@ function renderDropdown(data) {
   }
 }
 
+// Function to close the dropdown when clicking outside
+function closeDropdownOnClickOutside(event) {
+  const dropdownContainer = document.querySelector("[dropDown-container]");
+  const searchInput = document.getElementById("searchInput");
+
+  if (
+    !dropdownContainer.contains(event.target) &&
+    event.target !== searchInput &&
+    !searchInput.contains(event.target)
+  ) {
+    dropdownContainer.classList.remove("searchResults-display");
+  }
+}
+
+// Event listener to close dropdown on click outside
+window.addEventListener("click", closeDropdownOnClickOutside);
+
+// Event listener to prevent closing when clicking inside the dropdown
+document
+  .querySelector("[dropDown-container]")
+  .addEventListener("click", function (event) {
+    event.stopPropagation();
+  });
+
 // Function to validate input using regular expression
 function validateInput(input) {
   const regex = /^[a-zA-ZșțâăîÎŞŢÂĂ\s-.,]+$/;
@@ -315,15 +313,25 @@ function performSearch(data) {
 
     const pastedText = event.clipboardData.getData("text");
     const currentInputValue = searchInput.value;
-    searchInput.value = currentInputValue + pastedText;
+    const selectionStart = searchInput.selectionStart;
+    const selectionEnd = searchInput.selectionEnd;
 
-    const searchedVal = (currentInputValue + pastedText).trim().toLowerCase();
-    if (searchedVal.length >= 3) {
-      const searchResult = searchLocation(searchedVal, data.judet);
-      const searchResultBucuresti = searchMunicipiu(
-        searchedVal,
-        data.municipiu
-      );
+    // Replace the selected text with the pasted text
+    const newValue =
+      currentInputValue.substring(0, selectionStart) +
+      pastedText +
+      currentInputValue.substring(selectionEnd);
+
+    searchInput.value = newValue;
+
+    // Trigger the input event to handle the search logic
+    searchInput.dispatchEvent(new Event("input"));
+    if (newValue.length >= 3) {
+      const searchResult = searchLocation(newValue, data.judet);
+      const searchResultBucuresti = searchMunicipiu(newValue, data.municipiu);
+
+      const inputWidth = searchInput.scrollWidth + 2;
+      searchInput.style.width = `${inputWidth}px`;
 
       if (searchResult || searchResultBucuresti) {
         const uniqueResults = removeDuplicates(searchResult);
