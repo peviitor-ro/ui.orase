@@ -1,3 +1,4 @@
+// Set focus on the search input when the window loads
 window.onload = function () {
   document.getElementById("searchInput").focus();
 };
@@ -10,33 +11,258 @@ const dREG = new RegExp("ă", "g");
 const eREG = new RegExp("î", "g");
 
 // Fetch data from the API and initiate the search
-async function getData() {
+async function fetchData() {
   try {
     const response = await fetch(`https://orase.peviitor.ro/`);
     const data = await response.json();
-    search(data);
+    performSearch(data);
+    renderDropdown(data);
   } catch (error) {
     console.error("Error fetching data:", error);
   }
 }
 
-getData();
+// Trigger data fetching on page load
+fetchData();
 
-const cardTemplate = document.querySelector("[data-template]");
-const cardContainer = document.querySelector("[data-container]");
+// Add an event listener to the document for mousedown event
+document.addEventListener("mousedown", (event) => {
+  const isClickInsideSearchInput = searchInput.contains(event.target);
+  if (
+    !isClickInsideSearchInput &&
+    !isDescendantOf(event.target, dropDownContainer)
+  ) {
+    // Clicked outside both searchInput and dropDownContainer
+    dropDownContainer.classList.remove("searchResults-display");
+    dropDownContainer.innerHTML = "";
+    dropDownContainer.scrollTop = 0;
+  }
+});
 
-const searchInp = document.querySelector(".searchInp");
+// Function to check if an element is a descendant of another element
+function isDescendantOf(child, ancestor) {
+  let node = child.parentNode;
+  while (node !== null) {
+    if (node === ancestor) {
+      return true;
+    }
+    node = node.parentNode;
+  }
+  return false;
+}
 
+const searchInput = document.getElementById("searchInput");
+const dropDownTemplate = document.querySelector("[dropDown-template]");
+const dropDownContainer = document.querySelector("[dropDown-container]");
+
+// Function to render the dropdown menu based on the search results
+function renderDropdown(data) {
+  let originalData;
+
+  // Event listener for the search input click
+  searchInput.addEventListener("click", () => {
+    if (!searchInput.value.trim()) {
+      dropDownContainer.classList.toggle("searchResults-display");
+      dropDownContainer.innerHTML = "";
+      dropDownContainer.scrollTop = 0;
+
+      originalData = [...data.judet, data.municipiu];
+      originalData.sort((a, b) => a.nume.localeCompare(b.nume));
+
+      renderDropdown(originalData);
+    }
+  });
+
+  function displaySelectedData(selectedItem) {
+    const resultArray = new Set();
+
+    dropDownContainer.scrollTop = 0;
+
+    if (selectedItem.sector) {
+      const sectorResult = selectedItem.sector;
+      if (sectorResult != null) {
+        for (const items of sectorResult) {
+          resultArray.add(items.nume);
+        }
+      }
+    }
+
+    if (selectedItem.municipiu) {
+      const municipiuResult = selectedItem.municipiu;
+      if (municipiuResult != null) {
+        municipiuResult.forEach((item) => {
+          resultArray.add(item.nume);
+          for (const items of item.localitate) {
+            resultArray.add(items.nume);
+            if (items.localitate != null) {
+              for (const nestedData of items.localitate) {
+                resultArray.add(nestedData.nume);
+              }
+            }
+          }
+        });
+      }
+    }
+
+    if (selectedItem.oras) {
+      const orasResult = selectedItem.oras;
+      if (orasResult != null) {
+        orasResult.forEach((item) => {
+          resultArray.add(item.nume);
+          for (const items of item.localitate) {
+            resultArray.add(items.nume);
+            if (items.localitate != null) {
+              for (const nestedData of items.localitate) {
+                resultArray.add(nestedData.nume);
+              }
+            }
+          }
+        });
+      }
+    }
+
+    if (selectedItem.comuna) {
+      const comunaResult = selectedItem.comuna;
+      if (comunaResult != null) {
+        comunaResult.forEach((item) => {
+          resultArray.add(item.nume);
+          for (const items of item.localitate) {
+            resultArray.add(items.nume);
+            if (items.localitate != null) {
+              for (const nestedData of items.localitate) {
+                resultArray.add(nestedData.nume);
+              }
+            }
+          }
+        });
+      }
+    }
+
+    dropDownContainer.innerHTML = "";
+
+    renderBackButton(originalData);
+    renderLocationDetails(selectedItem);
+    renderChooseLocationText();
+    uniqueArray(resultArray, selectedItem);
+  }
+
+  function renderBackButton(originalData) {
+    const divButton = document.createElement("div");
+    const backButton = document.createElement("p");
+    const imageButton = document.createElement("img");
+    divButton.classList.add("div-back-button");
+    backButton.classList.add("back-button");
+    imageButton.classList.add("arrow-image");
+    imageButton.src = "./icons/right-arrow.png";
+    imageButton.alt = "icon-arrow";
+    backButton.innerText = "Inapoi";
+    divButton.addEventListener("click", () => {
+      renderDropdown(originalData);
+    });
+
+    divButton.appendChild(imageButton);
+    divButton.appendChild(backButton);
+    dropDownContainer.appendChild(divButton);
+  }
+
+  function renderLocationDetails(selectedItem) {
+    const totJudetul = document.createElement("div");
+    totJudetul.classList.add("tot-judetul");
+    totJudetul.innerHTML = `<p>${selectedItem.nume.toLowerCase()}</p>  <span>Tot judetul</span>`;
+    dropDownContainer.appendChild(totJudetul);
+    totJudetul.addEventListener("click", function () {
+      dropDownContainer.classList.remove("searchResults-display");
+      searchInput.value = selectedItem.nume.toLowerCase();
+      searchInput.style.textTransform = "capitalize";
+    });
+  }
+
+  function renderChooseLocationText() {
+    const alegeLocatie = document.createElement("p");
+    alegeLocatie.classList.add("alege-locatie");
+    alegeLocatie.innerText = "Alege localitatea";
+    dropDownContainer.appendChild(alegeLocatie);
+  }
+
+  function uniqueArray(resultArray, selectedItem) {
+    const uniqueArray = Array.from(resultArray);
+    uniqueArray.sort((a, b) => a.localeCompare(b));
+    uniqueArray.forEach((item) => {
+      const keywordsToCheck = ["de", "lui", "cu", "din", "cel", "la", "II"];
+      const keywordMatchQuery = keywordsToCheck.some((keyword) =>
+        item.includes(keyword)
+      );
+
+      const card = dropDownTemplate.content.cloneNode(true).children[0];
+      const dataJudet = card.querySelector("[dropDown-afisare]");
+      dataJudet.innerHTML = keywordMatchQuery ? item : item.toLowerCase();
+      dataJudet.style.textTransform = !keywordMatchQuery ? "capitalize" : "";
+      // show results in input
+      card.addEventListener("click", () => {
+        function capitalizeFirstLetter(str) {
+          return str
+            .split(/([\s-]+)/)
+            .map((part) => {
+              if (part.trim() === "-") {
+                return part; // Preserve hyphens
+              } else {
+                return (
+                  part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()
+                );
+              }
+            })
+            .join("");
+        }
+
+        const resultJudet = selectedItem.nume.toLowerCase();
+        const capitalizedJudet = capitalizeFirstLetter(resultJudet);
+
+        dropDownContainer.classList.remove("searchResults-display");
+        searchInput.value = `${
+          keywordMatchQuery ? item : item.toLowerCase()
+        }, ${capitalizedJudet}`;
+        searchInput.style.textTransform = !keywordMatchQuery
+          ? "capitalize"
+          : "";
+      });
+
+      dropDownContainer.appendChild(card);
+    });
+  }
+
+  function renderDropdown(data) {
+    dropDownContainer.innerHTML = "";
+
+    const alegeLocatie = document.createElement("p");
+    alegeLocatie.classList.add("alege-locatie");
+    alegeLocatie.innerText = "Alege un judet";
+    dropDownContainer.appendChild(alegeLocatie);
+
+    data.forEach((item) => {
+      const card = dropDownTemplate.content.cloneNode(true).children[0];
+      const dataJudet = card.querySelector("[dropDown-afisare]");
+      const dropDownImage = card.querySelector("[dropDown-image]");
+      dataJudet.innerHTML = item.nume.toLowerCase();
+      dataJudet.style.textTransform = "capitalize";
+      dropDownImage.src = "./icons/right-arrow.png";
+      dropDownImage.alt = "arrow-icon";
+      dropDownContainer.appendChild(card);
+      card.addEventListener("click", () => {
+        displaySelectedData(item);
+      });
+    });
+  }
+}
+
+// Function to validate input using regular expression
 function validateInput(input) {
-  // Use a regular expression to check if the input contains letters, special characters, or spaces
-  const regex = /^[a-zA-ZșțâăîÎŞŢÂĂ\s-]+$/;
-
+  const regex = /^[a-zA-ZșțâăîÎŞŢÂĂ\s-.,]+$/;
   const invalidInput = document.querySelector(".errors");
   const search = document.querySelector(".search");
 
   if (!regex.test(input.value) && input.value.trim() !== "") {
-    // If input contains only letters and spaces, clear the input value
-    input.value = input.value.replace(/[^a-zA-ZșțâăîÎŞŢÂĂ\s-]/g, "");
+    // If input contains invalid characters, clear and display error
+    input.value = input.value.replace(/[^a-zA-ZșțâăîÎŞŢÂĂ\s-.,]/g, "");
     invalidInput.style.display = "block";
     search.style.border = "1px solid red";
     setTimeout(function () {
@@ -46,11 +272,15 @@ function validateInput(input) {
   }
 }
 
-function search(data) {
-  const searchInput = document.getElementById("searchInput");
+// Function to handle search functionality
+function performSearch(data) {
+  const cardTemplate = document.querySelector("[data-template]");
+  const cardContainer = document.querySelector("[data-container]");
 
   searchInput.addEventListener("input", function () {
+    dropDownContainer.classList.remove("searchResults-display");
     validateInput(searchInput);
+
     const searchedVal = searchInput.value.trim().toLowerCase();
 
     if (searchedVal.length >= 3) {
@@ -105,30 +335,6 @@ function search(data) {
       cardContainer.classList.add("searchResults-display");
       cardContainer.innerHTML =
         "<p>Introdu minim 3 litere ca sa poata functiona searchul</p>";
-    }
-  });
-
-  // Add an event listener to the search results container
-  cardContainer.addEventListener("click", function (event) {
-    const divElement = event.target.closest("div");
-
-    const checkDivText = divElement.innerHTML.includes(
-      "<p>Introdu minim 3 litere ca sa poata functiona searchul</p>"
-    );
-
-    const checkDivText2 = divElement.innerHTML.includes(
-      "Locatia nu a fost gasita!"
-    );
-
-    if (divElement && !checkDivText && !checkDivText2) {
-      const selectedLocation = divElement.innerText;
-      // Add space between words
-      const spacedLocation = selectedLocation.replace(/\s+/g, " ");
-
-      searchInput.style.width = `${spacedLocation.length * 9}px`;
-      searchInput.value = spacedLocation;
-      cardContainer.classList.remove("searchResults-display");
-      cardContainer.innerHTML = "";
     }
   });
 
@@ -203,7 +409,6 @@ function search(data) {
           cardContainer.appendChild(card);
         });
       }
-
       // Display judete results
       if (results) {
         sortedResults.forEach((result) => {
@@ -260,6 +465,50 @@ function search(data) {
             dataJudet.style.textTransform = "capitalize";
           }
 
+          // Add an event listener to the search results container
+          card.addEventListener("click", function () {
+            cardContainer.classList.remove("searchResults-display");
+            cardContainer.innerHTML = "";
+
+            function capitalizeFirstLetter(str) {
+              return str
+                .split(/([\s-]+)/)
+                .map((part) => {
+                  if (part.trim() === "-") {
+                    return part;
+                  } else {
+                    return (
+                      part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()
+                    );
+                  }
+                })
+                .join("");
+            }
+
+            let inputValue;
+
+            if (result.judet !== null) {
+              const resultJudet = result.judet.toLowerCase();
+              const capitalizedJudet = capitalizeFirstLetter(resultJudet);
+
+              inputValue = `${
+                keywordMatchQuery ? result.query : result.query.toLowerCase()
+              }, ${capitalizedJudet}`;
+            } else {
+              inputValue = `${
+                keywordMatchQuery ? result.query : result.query.toLowerCase()
+              }, ${result.query.toLowerCase()}`;
+            }
+
+            searchInput.value = inputValue;
+
+            const inputWidth = inputValue.length * 9;
+            searchInput.style.width = `${inputWidth}px`;
+
+            searchInput.style.textTransform = keywordMatchQuery
+              ? ""
+              : "capitalize";
+          });
           cardContainer.appendChild(card);
         });
       }
@@ -537,8 +786,8 @@ function search(data) {
   }
 }
 
+// Event listener for the delete icon to clear the search input
 const deleteIcon = document.querySelector(".delete-icon");
-
 deleteIcon.addEventListener("click", () => {
   document.querySelector("#searchInput").style.width = "auto";
   document.querySelector("#searchInput").value = "";
