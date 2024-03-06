@@ -307,45 +307,6 @@ function performSearch(data) {
     }
   });
 
-  // Add an event listener to handle paste events
-  searchInput.addEventListener("paste", function (event) {
-    event.preventDefault();
-
-    const pastedText = event.clipboardData.getData("text");
-    const currentInputValue = searchInput.value;
-    const selectionStart = searchInput.selectionStart;
-    const selectionEnd = searchInput.selectionEnd;
-
-    // Replace the selected text with the pasted text
-    const newValue =
-      currentInputValue.substring(0, selectionStart) +
-      pastedText +
-      currentInputValue.substring(selectionEnd);
-
-    searchInput.value = newValue;
-
-    // Trigger the input event to handle the search logic
-    searchInput.dispatchEvent(new Event("input"));
-    if (newValue.length >= 3) {
-      const searchResult = searchLocation(newValue, data.judet);
-      const searchResultBucuresti = searchMunicipiu(newValue, data.municipiu);
-
-      const inputWidth = searchInput.scrollWidth + 2;
-      searchInput.style.width = `${inputWidth}px`;
-
-      if (searchResult || searchResultBucuresti) {
-        const uniqueResults = removeDuplicates(searchResult);
-        displayResults(uniqueResults, searchResultBucuresti);
-      } else {
-        displayResults([]);
-      }
-    } else {
-      cardContainer.classList.add("searchResults-display");
-      cardContainer.innerHTML =
-        "<p>Introdu minim 3 litere ca sa poata functiona searchul</p>";
-    }
-  });
-
   function displayResults(results, resultsBucuresti) {
     cardContainer.innerHTML = "";
 
