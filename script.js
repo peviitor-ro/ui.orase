@@ -254,13 +254,13 @@ document
 
 // Function to validate input using regular expression
 function validateInput(input) {
-  const regex = /^[a-zA-ZșțâăîÎŞŢÂĂ\s-.,]+$/;
+  const regex = /^[a-zA-ZșțâăîÎȚȘÂĂ\s-.,]+$/;
   const invalidInput = document.querySelector(".errors");
   const search = document.querySelector(".search");
 
   if (!regex.test(input.value) && input.value.trim() !== "") {
     // If input contains invalid characters, clear and display error
-    input.value = input.value.replace(/[^a-zA-ZșțâăîÎŞŢÂĂ\s-.,]/g, "");
+    input.value = input.value.replace(/[^a-zA-ZșțâăîÎÂȚȘĂ\s-.,]/g, "");
     invalidInput.style.display = "block";
     search.style.border = "1px solid red";
     setTimeout(function () {
