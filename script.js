@@ -17,7 +17,6 @@ async function fetchData() {
     const data = await response.json();
     performSearch(data);
     renderDropdown(data);
-    console.log(data.judet);
   } catch (error) {
     console.error("Error fetching data:", error);
   }
@@ -426,7 +425,6 @@ function performSearch(data) {
                 ? "<strong>Judetul</strong> " + result.query
                 : "<strong>Judetul</strong> " + result.query.toLowerCase()
             }`;
-            // dataParent.textContent = result.query.toLowerCase();
           }
 
           if (!keywordMatchQuery) {
