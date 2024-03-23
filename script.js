@@ -314,50 +314,63 @@ function performSearch(data) {
       (results && results.length > 0) ||
       (resultsBucuresti && resultsBucuresti.length > 0)
     ) {
-      const searchTerm = searchInput.value.trim().toLowerCase();
-
       // Custom sorting function based on the closeness of the match to the beginning
       const customSort = (a, b) => {
-        const aIndex =
-          a.query.toLowerCase().indexOf(searchTerm) &&
-          a.query
-            .toLowerCase()
+        const aIsTopResult = a.parent === null && a.judet === null;
+        const bIsTopResult = b.parent === null && b.judet === null;
 
-            .replace(aREG, "s")
-            .replace(bREG, "t")
-            .replace(cREG, "a")
-            .replace(dREG, "a")
-            .indexOf(searchTerm);
-        const bIndex =
-          b.query.toLowerCase().indexOf(searchTerm) &&
-          b.query
-            .toLowerCase()
+        if (aIsTopResult === bIsTopResult) {
+          const searchTerm = searchInput.value.trim().toLowerCase();
 
-            .replace(aREG, "s")
-            .replace(bREG, "t")
-            .replace(cREG, "a")
-            .replace(dREG, "a")
-            .indexOf(searchTerm);
+          const aIndex =
+            a.query.toLowerCase().indexOf(searchTerm) &&
+            a.query
+              .toLowerCase()
+              .replace(aREG, "s")
+              .replace(bREG, "t")
+              .replace(cREG, "a")
+              .replace(dREG, "a")
+              .indexOf(searchTerm);
+          const bIndex =
+            b.query.toLowerCase().indexOf(searchTerm) &&
+            b.query
+              .toLowerCase()
+              .replace(aREG, "s")
+              .replace(bREG, "t")
+              .replace(cREG, "a")
+              .replace(dREG, "a")
+              .indexOf(searchTerm);
 
-        // If the search term is present in both items, sort based on the index
-        if (aIndex !== -1 && bIndex !== -1) {
-          return aIndex - bIndex || a.query.localeCompare(b.query);
+          if (aIndex !== -1 && bIndex !== -1) {
+            return (
+              aIndex - bIndex ||
+              a.query.toLowerCase().localeCompare(b.query.toLowerCase())
+            );
+          }
+
+          if (aIndex !== -1) {
+            return -1;
+          }
+          if (bIndex !== -1) {
+            return 1;
+          }
+
+          // Change comparison here for ascending order
+          const judetComparison = a.judet.localeCompare(b.judet);
+          // Reverse the comparison result
+          if (judetComparison !== 0) {
+            return judetComparison;
+          }
+
+          return a.query.localeCompare(b.query);
         }
 
-        // If only one of the items contains the search term, prioritize it
-        if (aIndex !== -1) {
-          return -1;
-        }
-        if (bIndex !== -1) {
-          return 1;
-        }
-
-        // If neither item contains the search term, sort alphabetically
-        return a.query.localeCompare(b.query);
+        return aIsTopResult ? -1 : 1;
       };
 
       // Sort the results array using the custom sort function
       const sortedResults = results.sort(customSort);
+
       // Display Bucuresti results
       if (resultsBucuresti) {
         resultsBucuresti.forEach((result) => {
@@ -403,22 +416,15 @@ function performSearch(data) {
                 : result.query.toLowerCase() + ","
             }`;
             dataJudet.textContent = result.judet.toLowerCase();
-            dataParent.textContent = `${
-              result.tip !== null
-                ? `(${
-                    keywordMatchParent
-                      ? result.parent
-                      : result.parent.toLowerCase()
-                  })`
-                : ""
-            }`;
+            dataParent.textContent = `${`(${
+              keywordMatchParent ? result.parent : result.parent.toLowerCase()
+            })`}`;
           } else {
-            dataQuery.textContent = `${
+            dataQuery.innerHTML = `${
               keywordMatchQuery
-                ? result.query + ","
-                : result.query.toLowerCase() + ","
+                ? "<strong>Judetul</strong> " + result.query
+                : "<strong>Judetul</strong> " + result.query.toLowerCase()
             }`;
-            dataParent.textContent = result.query.toLowerCase();
           }
 
           if (!keywordMatchQuery) {
@@ -465,8 +471,10 @@ function performSearch(data) {
               }, ${capitalizedJudet}`;
             } else {
               inputValue = `${
-                keywordMatchQuery ? result.query : result.query.toLowerCase()
-              }, ${result.query.toLowerCase()}`;
+                keywordMatchQuery
+                  ? "Judetul " + result.query
+                  : "Judetul " + result.query.toLowerCase()
+              }`;
             }
 
             searchInput.value = inputValue;
@@ -740,7 +748,8 @@ function performSearch(data) {
       for (const result of results) {
         const key = `${result.judet}-${result.parent}-${result.query}`;
         if (
-          (result.judet !== result.query && result.query !== result.parent) ||
+          (result.judet !== result.query && results.query === results.parent) ||
+          (result.judet === result.query && result.query === result.parent) ||
           (result.judet === null && result.parent === null)
         ) {
           if (!seenResults.has(key)) {
