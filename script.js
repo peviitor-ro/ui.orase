@@ -410,15 +410,22 @@ function performSearch(data) {
           );
 
           if (result.judet !== null) {
-            dataQuery.textContent = `${
-              keywordMatchQuery
-                ? result.query + ","
-                : result.query.toLowerCase() + ","
+            dataQuery.innerHTML = `<strong>${
+              result.locationParent !== null ? result.locationParent : ""
+            }</strong> ${
+              keywordMatchQuery ? result.query : result.query.toLowerCase()
+            }, `;
+
+            dataJudet.innerHTML = `<strong>${result.judet.toLowerCase()}</strong>`;
+            dataParent.textContent = `${
+              result.tip != null
+                ? `(${
+                    keywordMatchParent
+                      ? result.parent
+                      : result.parent.toLowerCase()
+                  })`
+                : ""
             }`;
-            dataJudet.textContent = result.judet.toLowerCase();
-            dataParent.textContent = `${`(${
-              keywordMatchParent ? result.parent : result.parent.toLowerCase()
-            })`}`;
           } else {
             dataQuery.innerHTML = `${
               keywordMatchQuery
@@ -462,19 +469,23 @@ function performSearch(data) {
 
             let inputValue;
 
-            if (result.judet !== null) {
-              const resultJudet = result.judet.toLowerCase();
-              const capitalizedJudet = capitalizeFirstLetter(resultJudet);
+            const location =
+              result.locationParent !== null ? result.locationParent : "";
 
-              inputValue = `${
-                keywordMatchQuery ? result.query : result.query.toLowerCase()
-              }, ${capitalizedJudet}`;
+            const query = keywordMatchQuery
+              ? result.query
+              : result.query.toLowerCase();
+
+            if (result.judet !== null) {
+              const capitalizedJudet = capitalizeFirstLetter(
+                result.judet.toLowerCase()
+              );
+
+              const tip =
+                result.parent !== result.judet ? "(" + result.parent + ")" : "";
+              inputValue = `${location} ${query}, ${capitalizedJudet} ${tip}`;
             } else {
-              inputValue = `${
-                keywordMatchQuery
-                  ? "Judetul " + result.query
-                  : "Judetul " + result.query.toLowerCase()
-              }`;
+              inputValue = `Judetul ${query}`;
             }
 
             searchInput.value = inputValue;
@@ -527,7 +538,8 @@ function performSearch(data) {
     query,
     locations,
     parentJudetName = null,
-    parentName = null
+    parentName = null,
+    locationParent = null
   ) {
     let matchingLocations = [];
 
@@ -549,6 +561,7 @@ function performSearch(data) {
           judet: parentName,
           parent: parentJudetName,
           tip: location.tip || null,
+          locationParent,
         };
         matchingLocations.push(result);
       }
@@ -559,7 +572,8 @@ function performSearch(data) {
           query,
           location.municipiu,
           location.nume,
-          judetName
+          judetName,
+          "Municipiu"
         );
         if (municipiuResult != null) {
           matchingLocations.push(
@@ -620,7 +634,8 @@ function performSearch(data) {
           query,
           location.oras,
           location.nume,
-          judetName
+          judetName,
+          "Oras"
         );
 
         if (orasResult != null) {
@@ -681,7 +696,8 @@ function performSearch(data) {
           query,
           location.comuna,
           location.nume,
-          judetName
+          judetName,
+          "Comuna"
         );
         if (comunaResult != null) {
           matchingLocations.push(
@@ -746,18 +762,20 @@ function performSearch(data) {
 
     if (results != null) {
       for (const result of results) {
-        const key = `${result.judet}-${result.parent}-${result.query}`;
-        if (
-          (result.judet !== result.query && results.query === results.parent) ||
-          (result.judet === result.query && result.query === result.parent) ||
-          (result.judet === null && result.parent === null)
-        ) {
-          if (!seenResults.has(key)) {
-            seenResults.add(key);
+        const { judet, parent, query, locationParent } = result;
+        const key = `${judet}-${parent}-${query}-${locationParent}`;
+        // const key = `${result.judet}-${result.parent}-${result.query}-${result.locationParent}`;
+        // if (
+        //   (result.judet !== result.query && results.query === results.parent) ||
+        //   (result.judet === result.query && result.query === result.parent) ||
+        //   (result.judet === null && result.parent === null)
+        // ) {
+        if (!seenResults.has(key)) {
+          seenResults.add(key);
 
-            uniqueResults.push(result);
-          }
+          uniqueResults.push(result);
         }
+        // }
       }
     }
     return uniqueResults;
