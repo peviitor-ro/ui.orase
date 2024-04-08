@@ -370,23 +370,17 @@ function performSearch(data) {
 
       // Sort the results array using the custom sort function
       const sortedResults = results.sort(customSort);
-
       // Display Bucuresti results
       if (resultsBucuresti) {
         resultsBucuresti.forEach((result) => {
           const card = cardTemplate.content.cloneNode(true).children[0];
           const dataQuery = card.querySelector("[data-query]");
           const dataParent = card.querySelector("[data-parent]");
-          if (result.parent != null) {
-            dataQuery.textContent = result.query + ",";
-            dataParent.textContent = result.parent.toLowerCase();
-          } else {
-            dataQuery.textContent = result.query.toLowerCase() + ",";
-            dataParent.textContent = result.query.toLowerCase();
-          }
 
-          dataQuery.style.textTransform = "capitalize";
-          dataParent.style.textTransform = "capitalize";
+          dataQuery.textContent = result.parent
+            ? result.query + ","
+            : result.query;
+          dataParent.textContent = result.parent;
 
           cardContainer.appendChild(card);
         });
@@ -399,52 +393,19 @@ function performSearch(data) {
           const dataParent = card.querySelector("[data-parent]");
           const dataJudet = card.querySelector("[data-judet]");
 
-          const keywordsToCheck = ["de", "lui", "cu", "din", "cel", "la", "II"];
-
-          const keywordMatchQuery = keywordsToCheck.some((keyword) =>
-            result.query.includes(keyword)
-          );
-          const keywordMatchParent = keywordsToCheck.some(
-            (keyword) =>
-              result.parent !== null && result.parent.includes(keyword)
-          );
-
           if (result.judet !== null) {
             dataQuery.innerHTML = `<strong>${
               result.locationParent !== null ? result.locationParent : ""
-            }</strong> ${
-              keywordMatchQuery ? result.query : result.query.toLowerCase()
-            }, `;
+            }</strong> ${result.query}, `;
 
-            dataJudet.innerHTML = `<strong>${result.judet.toLowerCase()}</strong>`;
+            dataJudet.innerHTML = `<strong>${result.judet}</strong>`;
             dataParent.textContent = `${
-              result.tip != null
-                ? `(${
-                    keywordMatchParent
-                      ? result.parent
-                      : result.parent.toLowerCase()
-                  })`
-                : ""
+              result.tip != null ? `(${result.parent})` : ""
             }`;
           } else {
             dataQuery.innerHTML = `${
-              keywordMatchQuery
-                ? "<strong>Judetul</strong> " + result.query
-                : "<strong>Judetul</strong> " + result.query.toLowerCase()
+              "<strong>Judetul</strong> " + result.query
             }`;
-          }
-
-          if (!keywordMatchQuery) {
-            dataQuery.style.textTransform = "capitalize";
-            dataJudet.style.textTransform = "capitalize";
-            if (!keywordMatchParent) {
-              dataParent.style.textTransform = "capitalize";
-            }
-          } else {
-            if (!keywordMatchParent) {
-              dataParent.style.textTransform = "capitalize";
-            }
-            dataJudet.style.textTransform = "capitalize";
           }
 
           // Add an event listener to the search results container
@@ -452,38 +413,17 @@ function performSearch(data) {
             cardContainer.classList.remove("searchResults-display");
             cardContainer.innerHTML = "";
 
-            function capitalizeFirstLetter(str) {
-              return str
-                .split(/([\s-]+)/)
-                .map((part) => {
-                  if (part.trim() === "-") {
-                    return part;
-                  } else {
-                    return (
-                      part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()
-                    );
-                  }
-                })
-                .join("");
-            }
-
             let inputValue;
 
             const location =
               result.locationParent !== null ? result.locationParent : "";
 
-            const query = keywordMatchQuery
-              ? result.query
-              : result.query.toLowerCase();
+            const query = result.query;
 
             if (result.judet !== null) {
-              const capitalizedJudet = capitalizeFirstLetter(
-                result.judet.toLowerCase()
-              );
-
               const tip =
                 result.parent !== result.judet ? "(" + result.parent + ")" : "";
-              inputValue = `${location} ${query}, ${capitalizedJudet} ${tip}`;
+              inputValue = `${location} ${query}, ${result.judet} ${tip}`;
             } else {
               inputValue = `Judetul ${query}`;
             }
@@ -492,10 +432,6 @@ function performSearch(data) {
 
             const inputWidth = inputValue.length * 9;
             searchInput.style.width = `${inputWidth}px`;
-
-            searchInput.style.textTransform = keywordMatchQuery
-              ? ""
-              : "capitalize";
           });
           cardContainer.appendChild(card);
         });
@@ -764,18 +700,12 @@ function performSearch(data) {
       for (const result of results) {
         const { judet, parent, query, locationParent } = result;
         const key = `${judet}-${parent}-${query}-${locationParent}`;
-        // const key = `${result.judet}-${result.parent}-${result.query}-${result.locationParent}`;
-        // if (
-        //   (result.judet !== result.query && results.query === results.parent) ||
-        //   (result.judet === result.query && result.query === result.parent) ||
-        //   (result.judet === null && result.parent === null)
-        // ) {
+
         if (!seenResults.has(key)) {
           seenResults.add(key);
 
           uniqueResults.push(result);
         }
-        // }
       }
     }
     return uniqueResults;
