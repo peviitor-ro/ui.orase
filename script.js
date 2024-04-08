@@ -17,7 +17,6 @@ async function fetchData() {
     const data = await response.json();
     performSearch(data);
     renderDropdown(data);
-    console.log(data);
   } catch (error) {
     console.error("Error fetching data:", error);
   }
