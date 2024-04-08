@@ -510,7 +510,7 @@ function performSearch(data) {
           location.municipiu,
           location.nume,
           judetName,
-          "Municipiu"
+          "Municipiul"
         );
         if (municipiuResult != null) {
           matchingLocations.push(
