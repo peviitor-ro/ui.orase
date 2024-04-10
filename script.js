@@ -393,9 +393,15 @@ function performSearch(data) {
           const dataParent = card.querySelector("[data-parent]");
           const dataJudet = card.querySelector("[data-judet]");
 
+          const resultTip = result.tip;
+
           if (result.judet !== null) {
-            dataQuery.innerHTML = `<strong>${
-              result.locationParent !== null ? result.locationParent : ""
+            dataQuery.innerHTML = `<strong style="text-transform:capitalize">${
+              result.locationParent !== null
+                ? result.locationParent
+                : result.tip !== null
+                ? result.tip
+                : ""
             }</strong> ${result.query}, `;
 
             dataJudet.innerHTML = `<strong>${result.judet}</strong>`;
@@ -416,14 +422,21 @@ function performSearch(data) {
             let inputValue;
 
             const location =
-              result.locationParent !== null ? result.locationParent : "";
+              result.locationParent !== null
+                ? result.locationParent
+                : result.tip !== null
+                ? result.tip
+                : "";
 
+            const capitalizedLocation =
+              location.charAt(0).toUpperCase() +
+              location.slice(1).toLowerCase();
             const query = result.query;
 
             if (result.judet !== null) {
               const tip =
                 result.parent !== result.judet ? "(" + result.parent + ")" : "";
-              inputValue = `${location} ${query}, ${result.judet} ${tip}`;
+              inputValue = `${capitalizedLocation} ${query}, ${result.judet} ${tip}`;
             } else {
               inputValue = `Judetul ${query}`;
             }
