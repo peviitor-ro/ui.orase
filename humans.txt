@@ -1,3 +1,4 @@
 Boga Sebastian Nicolae - Product Owner
 Guliman Adelina - Team Lead
 Cristian-Emil Zidarescu - QA Tester
+Adămache Andra- Test Designer
