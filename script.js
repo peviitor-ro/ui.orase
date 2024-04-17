@@ -142,7 +142,7 @@ function renderDropdown(data) {
   function renderLocationDetails(selectedItem) {
     const totJudetul = document.createElement("div");
     totJudetul.classList.add("tot-judetul");
-    totJudetul.innerHTML = `<p>${selectedItem.nume.toLowerCase()}</p>  <span>Tot judetul</span>`;
+    totJudetul.innerHTML = `<p>${selectedItem.nume.toLowerCase()}</p>  <span>Tot județul</span>`;
     dropDownContainer.appendChild(totJudetul);
     totJudetul.addEventListener("click", function () {
       dropDownContainer.classList.remove("searchResults-display");
@@ -393,14 +393,14 @@ function performSearch(data) {
           const dataParent = card.querySelector("[data-parent]");
           const dataJudet = card.querySelector("[data-judet]");
 
-          const resultTip = result.tip;
-
           if (result.judet !== null) {
             dataQuery.innerHTML = `<strong style="text-transform:capitalize">${
               result.locationParent !== null
                 ? result.locationParent
                 : result.tip !== null
-                ? result.tip
+                ? result.tip.includes("sat")
+                  ? "Sat"
+                  : "Oraș"
                 : ""
             }</strong> ${result.query}, `;
 
@@ -410,7 +410,7 @@ function performSearch(data) {
             }`;
           } else {
             dataQuery.innerHTML = `${
-              "<strong>Judetul</strong> " + result.query
+              "<strong>Județul</strong> " + result.query
             }`;
           }
 
@@ -425,7 +425,9 @@ function performSearch(data) {
               result.locationParent !== null
                 ? result.locationParent
                 : result.tip !== null
-                ? result.tip
+                ? result.tip.includes("sat")
+                  ? "Sat"
+                  : "Oraș"
                 : "";
 
             const capitalizedLocation =
@@ -438,7 +440,7 @@ function performSearch(data) {
                 result.parent !== result.judet ? "(" + result.parent + ")" : "";
               inputValue = `${capitalizedLocation} ${query}, ${result.judet} ${tip}`;
             } else {
-              inputValue = `Judetul ${query}`;
+              inputValue = `Județul ${query}`;
             }
 
             searchInput.value = inputValue;
@@ -584,7 +586,7 @@ function performSearch(data) {
           location.oras,
           location.nume,
           judetName,
-          "Oras"
+          "Oraș"
         );
 
         if (orasResult != null) {
