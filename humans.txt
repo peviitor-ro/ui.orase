@@ -9,3 +9,4 @@ Plugaru Andreea - QA Tester
 Nemtanu Simona - QA Tester
 Dumitrache Bogdan - QA Tester/Test Design
 ADINA BOERU - QA Tester
+Ciobanu Ovidiu-Alexandru - Front-End
