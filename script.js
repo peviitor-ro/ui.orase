@@ -496,6 +496,8 @@ function performSearch(data) {
 
     for (const location of locations) {
       const judetName = location.nume ? location.nume : parentJudetName;
+
+      const queryForComparison = query.replace(/\s/g, "-");
       const filtre =
         judetName
           .toLowerCase()
@@ -504,7 +506,16 @@ function performSearch(data) {
           .replace(cREG, "a")
           .replace(dREG, "a")
           .replace(eREG, "i")
-          .includes(query) || judetName.toLowerCase().includes(query);
+          .includes(query) ||
+        judetName.toLowerCase().includes(query) ||
+        judetName
+          .toLowerCase()
+          .replace(aREG, "s")
+          .replace(bREG, "t")
+          .replace(cREG, "a")
+          .replace(dREG, "a")
+          .replace(eREG, "i")
+          .includes(queryForComparison.toLowerCase());
 
       if (filtre) {
         const result = {
