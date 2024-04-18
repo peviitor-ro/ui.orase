@@ -142,12 +142,11 @@ function renderDropdown(data) {
   function renderLocationDetails(selectedItem) {
     const totJudetul = document.createElement("div");
     totJudetul.classList.add("tot-judetul");
-    totJudetul.innerHTML = `<p>${selectedItem.nume.toLowerCase()}</p>  <span>Tot județul</span>`;
+    totJudetul.innerHTML = `<p>${selectedItem.nume}</p>  <span>Tot județul</span>`;
     dropDownContainer.appendChild(totJudetul);
     totJudetul.addEventListener("click", function () {
       dropDownContainer.classList.remove("searchResults-display");
-      searchInput.value = selectedItem.nume.toLowerCase();
-      searchInput.style.textTransform = "capitalize";
+      searchInput.value = selectedItem.nume;
     });
   }
 
@@ -162,42 +161,19 @@ function renderDropdown(data) {
     const uniqueArray = Array.from(resultArray);
     uniqueArray.sort((a, b) => a.localeCompare(b));
     uniqueArray.forEach((item) => {
-      const keywordsToCheck = ["de", "lui", "cu", "din", "cel", "la", "II"];
-      const keywordMatchQuery = keywordsToCheck.some((keyword) =>
-        item.includes(keyword)
-      );
-
       const card = dropDownTemplate.content.cloneNode(true).children[0];
       const dataJudet = card.querySelector("[dropDown-afisare]");
-      dataJudet.innerHTML = keywordMatchQuery ? item : item.toLowerCase();
-      dataJudet.style.textTransform = !keywordMatchQuery ? "capitalize" : "";
+      dataJudet.innerHTML = item;
+
       // show results in input
       card.addEventListener("click", () => {
-        function capitalizeFirstLetter(str) {
-          return str
-            .split(/([\s-]+)/)
-            .map((part) => {
-              if (part.trim() === "-") {
-                return part; // Preserve hyphens
-              } else {
-                return (
-                  part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()
-                );
-              }
-            })
-            .join("");
-        }
-
-        const resultJudet = selectedItem.nume.toLowerCase();
-        const capitalizedJudet = capitalizeFirstLetter(resultJudet);
+        const resultJudet = selectedItem.nume;
 
         dropDownContainer.classList.remove("searchResults-display");
-        searchInput.value = `${
-          keywordMatchQuery ? item : item.toLowerCase()
-        }, ${capitalizedJudet}`;
-        searchInput.style.textTransform = !keywordMatchQuery
-          ? "capitalize"
-          : "";
+        searchInput.value = `${item}, ${resultJudet}`;
+
+        const inputWidth = searchInput.value.length * 9;
+        searchInput.style.width = `${inputWidth}px`;
       });
 
       dropDownContainer.appendChild(card);
@@ -216,8 +192,7 @@ function renderDropdown(data) {
       const card = dropDownTemplate.content.cloneNode(true).children[0];
       const dataJudet = card.querySelector("[dropDown-afisare]");
       const dropDownImage = card.querySelector("[dropDown-image]");
-      dataJudet.innerHTML = item.nume.toLowerCase();
-      dataJudet.style.textTransform = "capitalize";
+      dataJudet.innerHTML = item.nume;
       dropDownImage.src = "./icons/right-arrow.png";
       dropDownImage.alt = "arrow-icon";
       dropDownContainer.appendChild(card);
@@ -496,6 +471,8 @@ function performSearch(data) {
 
     for (const location of locations) {
       const judetName = location.nume ? location.nume : parentJudetName;
+
+      const queryForComparison = query.replace(/\s/g, "-");
       const filtre =
         judetName
           .toLowerCase()
@@ -504,7 +481,16 @@ function performSearch(data) {
           .replace(cREG, "a")
           .replace(dREG, "a")
           .replace(eREG, "i")
-          .includes(query) || judetName.toLowerCase().includes(query);
+          .includes(query) ||
+        judetName.toLowerCase().includes(query) ||
+        judetName
+          .toLowerCase()
+          .replace(aREG, "s")
+          .replace(bREG, "t")
+          .replace(cREG, "a")
+          .replace(dREG, "a")
+          .replace(eREG, "i")
+          .includes(queryForComparison.toLowerCase());
 
       if (filtre) {
         const result = {
