@@ -11,3 +11,4 @@ Dumitrache Bogdan - QA Tester/Test Design
 ADINA BOERU - QA Tester
 Ciobanu Ovidiu-Alexandru - Front-End
 Chiparca Romeo- QA Tester
+Florin Nistor - QA Tester / Test Design
