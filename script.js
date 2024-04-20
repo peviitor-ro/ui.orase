@@ -229,13 +229,13 @@ document
 
 // Function to validate input using regular expression
 function validateInput(input) {
-  const regex = /^[a-zA-ZșțâăîÎȚȘÂĂ\s-.,]+$/;
+  const regex = /^[a-zA-ZșțâăîÎȚȘÂĂ0-9\s-.,]+$/;
   const invalidInput = document.querySelector(".errors");
   const search = document.querySelector(".search");
 
   if (!regex.test(input.value) && input.value.trim() !== "") {
     // If input contains invalid characters, clear and display error
-    input.value = input.value.replace(/[^a-zA-ZșțâăîÎÂȚȘĂ\s-.,]/g, "");
+    input.value = input.value.replace(/[^a-zA-ZșțâăîÎÂȚȘĂ0-9\s-.,]/g, "");
     invalidInput.style.display = "block";
     search.style.border = "1px solid red";
     setTimeout(function () {
@@ -256,7 +256,7 @@ function performSearch(data) {
 
     const searchedVal = searchInput.value.trim().toLowerCase();
 
-    if (searchedVal.length >= 3) {
+    if (searchedVal.length >= 2) {
       const searchResult = searchLocation(searchedVal, data.judet);
       const searchResultBucuresti = searchMunicipiu(
         searchedVal,
@@ -272,7 +272,7 @@ function performSearch(data) {
     } else {
       cardContainer.classList.add("searchResults-display");
       cardContainer.innerHTML =
-        "<p>Introdu minim 3 litere ca sa poata functiona searchul</p>";
+        "<p>Introdu minim 2 litere ca sa poata functiona searchul</p>";
     }
 
     if (searchedVal.length < 1) {
