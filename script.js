@@ -700,15 +700,17 @@ function performSearch(data) {
     if (results != null) {
       for (const result of results) {
         const { judet, parent, query, locationParent } = result;
-        const key = `${judet}-${parent}-${query}-${locationParent}`;
 
-        if (!seenResults.has(key)) {
-          seenResults.add(key);
-
-          uniqueResults.push(result);
+        if (query != undefined) {
+          const key = `${judet}-${parent}-${query}-${locationParent}`;
+          if (!seenResults.has(key)) {
+            seenResults.add(key);
+            uniqueResults.push(result);
+          }
         }
       }
     }
+
     return uniqueResults;
   }
 }
