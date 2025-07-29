@@ -20,6 +20,10 @@ Tehnologiile principale utilizate în acest proiect sunt:
 - <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original.svg" alt="css3" width="18"/> CSS: Stilizarea și formatarea paginii pentru o experiență vizuală plăcută.
 - <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg" alt="javascript" width="15"/> JavaScript: Logica de programare pentru gestionarea evenimentelor, interacțiunea cu API-ul și afișarea rezultatelor.
 
+## Design
+https://www.figma.com/design/89A95fEUgMbRi7nK1XqeLN/peviitor---UI_API_ORASE?node-id=0-1&p=f&t=qJoDApzIS7vA6oU9-0
+
+
 ## 🎯 Obiective
 1. **🔍 Focus la încărcarea paginii**: Se asigură că inputul de căutare primește automat focus-ul la încărcarea paginii.
 2. **🔄 Interacțiune cu API**: Se obțin datele de la un API (https://orase.peviitor.ro/) și se inițiază căutarea.
