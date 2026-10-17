@@ -1,0 +1,16 @@
+/**
+ * Global Page Layout
+ */
+
+.container {
+  width: 100%;
+  max-width: 1250px;
+  min-height: 100dvh;
+  height: auto;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+}

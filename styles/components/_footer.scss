@@ -1,0 +1,50 @@
+/**
+ * Footer Component
+ * Contains links to associated platforms and copyright notice.
+ */
+
+.app-footer {
+  margin-top: auto;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid $glacier-mist;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+
+  .footer-links {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    a {
+      color: $ashfall;
+      text-decoration: none;
+      font-size: 10.5pt;
+      font-weight: 500;
+      transition: color 0.15s ease;
+
+      &:hover {
+        color: $deep-teal;
+        text-decoration: underline;
+      }
+    }
+
+    .divider {
+      color: #9aa5b1;
+      font-size: 11pt;
+      line-height: 1;
+      user-select: none;
+    }
+  }
+
+  .footer-copy {
+    font-size: 9pt;
+    color: #788290;
+    text-align: center;
+    line-height: 1.5;
+  }
+}

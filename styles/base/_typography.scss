@@ -1,0 +1,18 @@
+/**
+ * Base Typography
+ */
+
+body {
+  font-family: $font-family-base;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $font-family-base;
+  font-weight: 600;
+  color: $deep-teal;
+}

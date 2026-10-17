@@ -1,0 +1,14 @@
+{
+  "name": "ui.orase",
+  "version": "1.0.0",
+  "description": "API Orase Romania - Search & Code Playground",
+  "type": "module",
+  "scripts": {
+    "build:css": "npx sass styles/styles.scss styles/styles.css",
+    "build": "npm run build:css",
+    "watch:css": "npx sass styles/styles.scss styles/styles.css --watch"
+  },
+  "keywords": ["romania", "orase", "api", "peviitor"],
+  "author": "peviitor",
+  "license": "MIT"
+}
