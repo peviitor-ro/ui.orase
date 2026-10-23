@@ -19,11 +19,36 @@ export function highlightJavaScript(code) {
         return `\x00${tokens.length - 1}\x00`;
     };
 
-    // Template literal string segments: `...${, }...${, }...`, `...`
-    esc = esc.replace(/`([^`$]*)\${/g, (_, p1) => addToken("hl-str", "`" + p1) + "${");
-    esc = esc.replace(/}([^`$]*)\${/g, (_, p1) => "}" + addToken("hl-str", p1) + "${");
-    esc = esc.replace(/}([^`$]*)`/g, (_, p1) => "}" + addToken("hl-str", p1 + "`"));
-    esc = esc.replace(/`([^`$]*)`/g, (_, p1) => addToken("hl-str", "`" + p1 + "`"));
+    // Template literals with backticks: `...`
+    esc = esc.replace(/`([^`\\]*(?:\\.[^`\\]*)*)`/gs, (match, content) => {
+        if (!content.includes("${")) {
+            return addToken("hl-str", "`" + content + "`");
+        }
+        let out = addToken("hl-str", "`");
+        let remaining = content;
+        while (remaining.length > 0) {
+            const startIdx = remaining.indexOf("${");
+            if (startIdx === -1) {
+                out += addToken("hl-str", remaining + "`");
+                break;
+            }
+            if (startIdx > 0) {
+                out += addToken("hl-str", remaining.substring(0, startIdx));
+            }
+            const endIdx = remaining.indexOf("}", startIdx + 2);
+            if (endIdx === -1) {
+                out += addToken("hl-str", remaining.substring(startIdx) + "`");
+                break;
+            }
+            const expr = remaining.substring(startIdx + 2, endIdx);
+            out += "${" + expr + "}";
+            remaining = remaining.substring(endIdx + 1);
+            if (remaining.length === 0) {
+                out += addToken("hl-str", "`");
+            }
+        }
+        return out;
+    });
 
     // Standard string literals
     esc = esc.replace(/('(?:\\'|[^'\\])*'|"(?:\\"|[^"\\])*")/g, (m) => addToken("hl-str", m));
@@ -32,7 +57,7 @@ export function highlightJavaScript(code) {
     esc = esc.replace(/(^|\s)(\/\/[^\n]*)/g, (_, p1, p2) => p1 + addToken("hl-cmt", p2));
 
     // Types / Classes
-    esc = esc.replace(/\b(Error|Response|Promise|JSON|Object|Array)\b/g, (m) => addToken("hl-type", m));
+    esc = esc.replace(/\b(Error|Response|Promise|JSON|Object|Array|URLSearchParams|URL)\b/g, (m) => addToken("hl-type", m));
 
     // Control flow keywords
     esc = esc.replace(/\b(return|if|else|throw|try|catch|finally|await|async)\b/g, (m) => addToken("hl-ctrl", m));
@@ -44,7 +69,7 @@ export function highlightJavaScript(code) {
     esc = esc.replace(/\b(fetch|then|catch|log|error|json|encodeURIComponent)\b(?=\()/g, (m) => addToken("hl-fn", m));
 
     // Common variables & properties
-    esc = esc.replace(/\b(url|query|judet|response|data|error|status|ok)\b/g, (m) => addToken("hl-var", m));
+    esc = esc.replace(/\b(url|params|query|judet|q|response|data|error|status|ok)\b/g, (m) => addToken("hl-var", m));
 
     // Booleans & null
     esc = esc.replace(/\b(true|false|null|undefined)\b/g, (m) => addToken("hl-bool", m));
@@ -96,10 +121,36 @@ export function highlightPython(code) {
         return `\x00${tokens.length - 1}\x00`;
     };
 
-    // Python f-string segments: f"...{, }...{, }..."
-    esc = esc.replace(/f"([^{"]*)\{/g, (_, p1) => addToken("hl-str", 'f"' + p1) + "{");
-    esc = esc.replace(/\}([^{"]*)\{/g, (_, p1) => "}" + addToken("hl-str", p1) + "{");
-    esc = esc.replace(/\}([^{"]*)"/g, (_, p1) => "}" + addToken("hl-str", p1 + '"'));
+    // Python f-strings: f"..."
+    esc = esc.replace(/f"([^"\\]*(?:\\.[^"\\]*)*)"/gs, (match, content) => {
+        if (!content.includes("{")) {
+            return addToken("hl-str", 'f"' + content + '"');
+        }
+        let out = addToken("hl-str", 'f"');
+        let remaining = content;
+        while (remaining.length > 0) {
+            const startIdx = remaining.indexOf("{");
+            if (startIdx === -1) {
+                out += addToken("hl-str", remaining + '"');
+                break;
+            }
+            if (startIdx > 0) {
+                out += addToken("hl-str", remaining.substring(0, startIdx));
+            }
+            const endIdx = remaining.indexOf("}", startIdx + 1);
+            if (endIdx === -1) {
+                out += addToken("hl-str", remaining.substring(startIdx) + '"');
+                break;
+            }
+            const expr = remaining.substring(startIdx + 1, endIdx);
+            out += "{" + expr + "}";
+            remaining = remaining.substring(endIdx + 1);
+            if (remaining.length === 0) {
+                out += addToken("hl-str", '"');
+            }
+        }
+        return out;
+    });
 
     // Standard string literals
     esc = esc.replace(/('(?:\\'|[^'\\])*'|"(?:\\"|[^"\\])*")/g, (m) => addToken("hl-str", m));
@@ -120,7 +171,7 @@ export function highlightPython(code) {
     esc = esc.replace(/\b(get|raise_for_status|json|print|quote)\b(?=\()/g, (m) => addToken("hl-fn", m));
 
     // Variables
-    esc = esc.replace(/\b(url|response|data|e|query|judet)\b/g, (m) => addToken("hl-var", m));
+    esc = esc.replace(/\b(url|params|response|data|e|query|judet)\b/g, (m) => addToken("hl-var", m));
 
     // Booleans & None
     esc = esc.replace(/\b(True|False|None)\b/g, (m) => addToken("hl-bool", m));
@@ -155,7 +206,7 @@ export function highlightPhp(code) {
 
     // Functions
     esc = esc.replace(/\b(echo|print_r)\b/g, (m) => addToken("hl-fn", m));
-    esc = esc.replace(/\b(file_get_contents|json_decode|urlencode)\b(?=\()/g, (m) => addToken("hl-fn", m));
+    esc = esc.replace(/\b(file_get_contents|json_decode|urlencode|http_build_query)\b(?=\()/g, (m) => addToken("hl-fn", m));
 
     // PHP Variables ($...)
     esc = esc.replace(/(\$[a-zA-Z_0-9]+)/g, (m) => addToken("hl-var", m));
