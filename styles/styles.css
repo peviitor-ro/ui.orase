@@ -48,7 +48,7 @@ h5,
 h6 {
   font-family: "Asap", sans-serif;
   font-weight: 600;
-  color: #28536b;
+  color: #28536B;
 }
 
 /**
@@ -79,9 +79,7 @@ h6 {
 }
 .heading .logo a {
   display: inline-block;
-  transition:
-    transform 0.2s ease,
-    opacity 0.2s ease;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 .heading .logo a:hover {
   transform: scale(1.04);
@@ -104,13 +102,13 @@ h6 {
   height: 2px;
 }
 .flag .r {
-  background-color: #ce1126;
+  background-color: #CE1126;
 }
 .flag .b {
   background-color: #002b7f;
 }
 .flag .y {
-  background-color: #fcd116;
+  background-color: #FCD116;
 }
 
 /**
@@ -171,9 +169,9 @@ h6 {
   font-size: 17pt;
   text-align: center;
   font-weight: 400;
-  border: 1px solid #ebeff4;
+  border: 1px solid #EBEFF4;
   border-radius: 6px;
-  background: #ebeff4;
+  background: #EBEFF4;
   width: 100%;
   font-family: inherit;
 }
@@ -194,7 +192,7 @@ h6 {
 }
 .api-container .tags .tag {
   position: relative;
-  background-color: #ebeff4;
+  background-color: #EBEFF4;
   display: inline-flex;
   align-items: center;
   padding: 0.45rem 2rem 0.45rem 0.35rem;
@@ -225,7 +223,7 @@ h6 {
   --ionicon-stroke-width: 42px;
 }
 .api-container .tags .tag .close:hover {
-  color: #ce1126;
+  color: #CE1126;
 }
 .api-container .tags .tag::before {
   content: attr(data-label);
@@ -249,7 +247,7 @@ h6 {
   font-size: 15pt;
   border-radius: 6px;
   border: 1px solid #d8dee8;
-  background-color: #ebeff4;
+  background-color: #EBEFF4;
   transition: 0.125s ease-in;
   max-height: 380px;
   overflow-y: auto;
@@ -319,10 +317,10 @@ h6 {
 }
 .api-container #api-select ul li.select-item:hover {
   background: #dbe2eb;
-  color: #28536b;
+  color: #28536B;
 }
 .api-container #api-select ul li.select-item.selected {
-  background: #28536b;
+  background: #28536B;
   color: #ffffff;
 }
 .api-container #api-select ul li.select-item .item-badge {
@@ -333,7 +331,7 @@ h6 {
   white-space: nowrap;
 }
 .api-container #api-select ul li.select-item .item-badge.badge-judet {
-  background: #28536b;
+  background: #28536B;
   color: #fff;
 }
 .api-container #api-select ul li.select-item .item-badge.badge-municipiu {
@@ -353,7 +351,7 @@ h6 {
   color: #fff;
 }
 .api-container #api-select ul li.select-item .item-badge.badge-sector {
-  background: #ce1126;
+  background: #CE1126;
   color: #fff;
 }
 .api-container #api-select ul li.select-item .item-title {
@@ -366,7 +364,7 @@ h6 {
   font-weight: 300;
 }
 .api-container #api-select ul li.select-item:hover .item-sub {
-  color: #28536b;
+  color: #28536B;
 }
 
 /**
@@ -424,10 +422,8 @@ h6 {
   border: none;
   border-top: 2px solid transparent;
   color: #969696;
-  font-family:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: 9.5pt;
-  font-weight: 500;
   padding: 8px 14px;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -441,6 +437,8 @@ h6 {
 .code-tab.active {
   color: #ffffff;
   background: #1e1e1e;
+  border-top: 2px solid #007acc;
+  font-weight: 500;
 }
 
 .copy-button {
@@ -479,8 +477,7 @@ h6 {
   gap: 8px;
   border-bottom: 1px solid #2d2d2d;
   font-size: 9.5pt;
-  font-family:
-    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 }
 
 .code-method {
@@ -510,7 +507,7 @@ h6 {
   background: #1e1e1e;
   color: #d4d4d4;
   overflow-x: auto;
-  max-height: 360px;
+  max-height: 320px;
   overflow-y: auto;
   font-family: Consolas, "Courier New", ui-monospace, monospace;
   font-size: 12.5px;
@@ -602,9 +599,7 @@ h6 {
   white-space: nowrap;
   opacity: 0;
   transform: translateY(4px);
-  transition:
-    opacity 0.15s ease,
-    transform 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease;
   backdrop-filter: blur(4px);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -620,13 +615,13 @@ h6 {
   height: 0;
   border: 5px solid transparent;
 }
-.app-tooltip[data-placement="top"]::before {
+.app-tooltip[data-placement=top]::before {
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
   border-top-color: rgba(0, 0, 0, 0.85);
 }
-.app-tooltip[data-placement="bottom"]::before {
+.app-tooltip[data-placement=bottom]::before {
   bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
@@ -641,7 +636,7 @@ h6 {
   margin-top: auto;
   width: 100%;
   padding: 0.75rem 1rem;
-  border-top: 1px solid #ebeff4;
+  border-top: 1px solid #EBEFF4;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -662,7 +657,7 @@ h6 {
   transition: color 0.15s ease;
 }
 .app-footer .footer-links a:hover {
-  color: #28536b;
+  color: #28536B;
   text-decoration: underline;
 }
 .app-footer .footer-links .divider {

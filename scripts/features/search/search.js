@@ -81,14 +81,35 @@ export function renderDropdown() {
 
     // Case 1: Empty query
     if (!query) {
-        if (state.selectedJudet && state.allLocalities.length > 0) {
+        if (state.selectedParent && state.allLocalities.length > 0) {
+            // Show subordinate localities in selected parent (comuna / municipiu / oras)
+            const parentName = state.selectedParent.name;
+            const countyName = state.selectedJudet ? state.selectedJudet.nume : "";
+            const locs = state.allLocalities.filter((l) =>
+                normalize(l.parent) === normalize(parentName) &&
+                (!countyName || normalize(l.judet) === normalize(countyName))
+            );
+
+            const tipDisplay = state.selectedParent.tip === "comuna" ? "comuna" : state.selectedParent.tip;
+            const header = document.createElement("div");
+            header.className = "select-header";
+            header.innerHTML = `<ion-icon name="location-outline"></ion-icon> Localități din ${escapeHtml(tipDisplay)} ${escapeHtml(parentName)} (${locs.length})`;
+            selectContainer.appendChild(header);
+
+            const ul = document.createElement("ul");
+            locs.forEach((loc) => {
+                const li = createLocalityListItem(loc);
+                ul.appendChild(li);
+            });
+            selectContainer.appendChild(ul);
+        } else if (state.selectedJudet && state.allLocalities.length > 0) {
             // Show localities in selected county
             const countyName = state.selectedJudet.nume;
             const locs = state.allLocalities.filter((l) => normalize(l.judet) === normalize(countyName));
 
             const header = document.createElement("div");
             header.className = "select-header";
-            header.innerHTML = `<ion-icon name="location-outline"></ion-icon> Localități din județul ${escapeHtml(state.selectedJudet.numeDiacritice)} (${locs.length})`;
+            header.innerHTML = `<ion-icon name="location-outline"></ion-icon> Localități din județul ${escapeHtml(state.selectedJudet.numeDiacritice || state.selectedJudet.nume)} (${locs.length})`;
             selectContainer.appendChild(header);
 
             const ul = document.createElement("ul");
@@ -130,12 +151,24 @@ export function renderDropdown() {
     // 2. Search localities
     let matchingLocalities = [];
     if (state.allLocalities.length > 0) {
-        matchingLocalities = state.allLocalities.filter((l) => {
-            if (state.selectedJudet) {
-                if (normalize(l.judet) !== normalize(state.selectedJudet.nume)) return false;
-            }
-            return l.normName.includes(query) || (!state.selectedJudet && l.normJudet.includes(query));
-        });
+        // If a parent is selected, first attempt filtering inside that parent
+        if (state.selectedParent) {
+            matchingLocalities = state.allLocalities.filter((l) => {
+                if (state.selectedJudet && normalize(l.judet) !== normalize(state.selectedJudet.nume)) return false;
+                const matchesParent = normalize(l.parent) === normalize(state.selectedParent.name) || normalize(l.name) === normalize(state.selectedParent.name);
+                return matchesParent && (l.normName.includes(query) || (!state.selectedJudet && l.normJudet.includes(query)));
+            });
+        }
+
+        // If no matches inside parent or no parent selected, search within county / full dataset
+        if (matchingLocalities.length === 0) {
+            matchingLocalities = state.allLocalities.filter((l) => {
+                if (state.selectedJudet) {
+                    if (normalize(l.judet) !== normalize(state.selectedJudet.nume)) return false;
+                }
+                return l.normName.includes(query) || (!state.selectedJudet && l.normJudet.includes(query));
+            });
+        }
 
         // Sort by relevance (exact prefix first)
         matchingLocalities.sort((a, b) => {
@@ -197,7 +230,7 @@ function createJudetListItem(j) {
 
     li.innerHTML = `
         <span class="item-badge badge-judet">Județ</span>
-        <span class="item-title">${escapeHtml(j.numeDiacritice)}</span>
+        <span class="item-title">${escapeHtml(j.numeDiacritice || j.nume)}</span>
         <span class="item-sub">${escapeHtml(j.cod)}</span>
     `;
 
@@ -219,9 +252,24 @@ function createLocalityListItem(loc) {
     else if (tipDisplay === "comuna") badgeClass = "badge-comuna";
     else if (tipDisplay === "sector") badgeClass = "badge-sector";
 
-    const parentInfo = loc.parent && loc.parent !== loc.name ? `(${loc.parent})` : "";
-    const judetInfo = loc.judet ? `jud. ${loc.judet}` : "";
+    let parentInfo = "";
+    if (loc.parent) {
+        let prefix = "";
+        if (loc.parentTip === "comuna") prefix = "com. ";
+        else if (loc.parentTip === "municipiu") prefix = "mun. ";
+        else if (loc.parentTip === "oras") prefix = "oraș ";
+        parentInfo = `(${prefix}${loc.parent})`;
+    }
+    const judetName = loc.judetDiacritice || loc.judet;
+    const judetInfo = judetName ? `jud. ${judetName}` : "";
     const subInfo = [parentInfo, judetInfo].filter(Boolean).join(" ");
+
+    // Highlight active selection
+    if (state.selectedLocality && state.selectedLocality.name === loc.name && state.selectedLocality.tip === loc.tip && state.selectedLocality.parent === loc.parent) {
+        li.classList.add("selected");
+    } else if (!state.selectedLocality && state.selectedParent && state.selectedParent.name === loc.name && state.selectedParent.tip === loc.tip) {
+        li.classList.add("selected");
+    }
 
     li.innerHTML = `
         <span class="item-badge ${badgeClass}">${escapeHtml(tipDisplay)}</span>
@@ -238,6 +286,7 @@ function createLocalityListItem(loc) {
 
 function selectJudet(j) {
     state.selectedJudet = j;
+    state.selectedParent = null;
     state.selectedLocality = null;
     state.currentQuery = "";
     if (searchInput) searchInput.value = "";
@@ -246,14 +295,32 @@ function selectJudet(j) {
 }
 
 function selectLocality(loc) {
-    state.selectedLocality = loc;
-
-    if (!state.selectedJudet && loc.judet) {
+    // 1. Resolve county
+    if (loc.judet) {
         const foundJudet = state.judete.find((j) => normalize(j.nume) === normalize(loc.judet));
         if (foundJudet) {
             state.selectedJudet = foundJudet;
         } else {
-            state.selectedJudet = { nume: loc.judet, numeDiacritice: loc.judet, cod: "" };
+            state.selectedJudet = { nume: loc.judet, numeDiacritice: loc.judetDiacritice || loc.judet, cod: "" };
+        }
+    }
+
+    // 2. Resolve parent vs locality
+    if (loc.tip === "comuna" || loc.tip === "municipiu" || loc.tip === "oras") {
+        state.selectedParent = {
+            name: loc.name,
+            tip: loc.tip
+        };
+        state.selectedLocality = null;
+    } else {
+        state.selectedLocality = loc;
+        if (loc.parent) {
+            state.selectedParent = {
+                name: loc.parent,
+                tip: loc.parentTip || "comuna"
+            };
+        } else {
+            state.selectedParent = null;
         }
     }
 

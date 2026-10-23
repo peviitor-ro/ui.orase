@@ -250,7 +250,36 @@ export function updateCodeSnippet(animate = false) {
         if (state.selectedJudet && state.selectedJudet.nume) {
             judetVal = state.selectedJudet.nume;
         }
-        descText = `Căutare: ${queryVal} (${state.selectedLocality.tip})`;
+
+        const parentName = state.selectedParent
+            ? state.selectedParent.name
+            : (state.selectedLocality.parent || "");
+        const parentTip = state.selectedParent
+            ? state.selectedParent.tip
+            : (state.selectedLocality.parentTip || "comuna");
+
+        let parentLabel = "comuna";
+        if (parentTip === "municipiu") parentLabel = "municipiul";
+        else if (parentTip === "oras") parentLabel = "orașul";
+
+        descText = `Căutare: ${queryVal} (${state.selectedLocality.tip}${parentName ? `, ${parentLabel} ${parentName}` : ""})`;
+
+        const parentObj = {};
+        if (parentName) {
+            const pKey = parentTip === "municipiu" ? "municipiu" : (parentTip === "oras" ? "oras" : "comuna");
+            parentObj[pKey] = parentName;
+        }
+
+        const judetDiac = state.selectedJudet
+            ? (state.selectedJudet.numeDiacritice || state.selectedJudet.nume)
+            : (state.selectedLocality.judetDiacritice || state.selectedLocality.judet || "");
+
+        const adresaParts = [
+            `${state.selectedLocality.tip} ${state.selectedLocality.name}`,
+            parentName ? `${parentLabel} ${parentName}` : "",
+            judetDiac ? `județul ${judetDiac}` : "",
+            "România"
+        ].filter(Boolean);
 
         sampleJson = JSON.stringify(
             {
@@ -260,20 +289,57 @@ export function updateCodeSnippet(animate = false) {
                         data: {
                             nume: state.selectedLocality.name,
                             tip: state.selectedLocality.tip,
+                            ...parentObj,
                             judet: {
-                                nume: state.selectedJudet ? state.selectedJudet.nume : "",
-                                numeDiacritice: state.selectedJudet
-                                    ? state.selectedJudet.numeDiacritice
-                                    : "",
+                                nume: state.selectedJudet ? state.selectedJudet.nume : (state.selectedLocality.judet || ""),
+                                numeDiacritice: judetDiac,
                                 cod: state.selectedJudet ? state.selectedJudet.cod : ""
                             },
                             adresaCompleta:
                                 state.selectedLocality.adresa &&
                                 state.selectedLocality.adresa.length > 0
                                     ? state.selectedLocality.adresa
-                                    : [
-                                          `${state.selectedLocality.tip} ${state.selectedLocality.name}, județul ${state.selectedJudet ? state.selectedJudet.nume : ""}, România`
-                                      ]
+                                    : [adresaParts.join(", ")]
+                        }
+                    }
+                ]
+            },
+            null,
+            2
+        );
+    } else if (state.selectedParent) {
+        mode = "locality";
+        queryVal = state.selectedParent.name;
+        if (state.selectedJudet && state.selectedJudet.nume) {
+            judetVal = state.selectedJudet.nume;
+        }
+
+        const parentTip = state.selectedParent.tip || "comuna";
+        let tipTitle = "Comuna";
+        if (parentTip === "municipiu") tipTitle = "Municipiul";
+        else if (parentTip === "oras") tipTitle = "Orașul";
+
+        const judetDiac = state.selectedJudet
+            ? (state.selectedJudet.numeDiacritice || state.selectedJudet.nume)
+            : judetVal;
+        descText = `${tipTitle} ${queryVal} (județul ${judetDiac})`;
+
+        sampleJson = JSON.stringify(
+            {
+                results: [
+                    {
+                        type: parentTip,
+                        data: {
+                            nume: queryVal,
+                            tip: parentTip,
+                            judet: {
+                                nume: state.selectedJudet ? state.selectedJudet.nume : "",
+                                numeDiacritice: judetDiac,
+                                cod: state.selectedJudet ? state.selectedJudet.cod : ""
+                            },
+                            adresaCompleta: [
+                                `${parentTip} ${queryVal}, județul ${judetDiac}, România`
+                            ]
                         }
                     }
                 ]

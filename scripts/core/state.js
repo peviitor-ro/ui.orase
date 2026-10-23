@@ -7,7 +7,8 @@ export const state = {
     allLocalities: [],      // 16,900+ localities loaded from /
     isAllLoaded: false,
     selectedJudet: null,    // e.g. { nume: "Cluj", numeDiacritice: "Cluj", cod: "CJ" }
-    selectedLocality: null, // e.g. { name: "Turda", tip: "municipiu", judet: "Cluj", ... }
+    selectedParent: null,   // e.g. { name: "Zimbor", tip: "comuna" }
+    selectedLocality: null, // e.g. { name: "Chendremal", tip: "sat", judet: "SALAJ", parent: "Zimbor", parentTip: "comuna" }
     currentQuery: "",
     currentTab: "javascript",
     rawCode: ""
